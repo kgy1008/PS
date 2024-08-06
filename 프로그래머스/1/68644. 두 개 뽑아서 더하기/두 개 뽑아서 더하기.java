@@ -1,10 +1,10 @@
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
 class Solution {
     public int[] solution(int[] numbers) {
-        ArrayList<Integer> answer = new ArrayList<>();
+        HashSet<Integer> answer = new HashSet<>();
 
         Arrays.sort(numbers);
         
@@ -15,7 +15,6 @@ class Solution {
         }
         
         return answer.stream()
-                     .distinct()
                      .sorted()
                      .mapToInt(Integer::intValue)
                      .toArray();
