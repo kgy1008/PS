@@ -3,12 +3,11 @@ import java.util.*;
 class Solution {
     public int solution(String dirs) {
         int answer = 0, x = 0, y = 0;
-        int nx = 0, ny = 0;
         Set<String> visited = new HashSet<>();
         
         for (char dir : dirs.toCharArray()) {
-            nx = x;
-            ny = y;
+            int nx = x;
+            int ny = y;
             
             if (dir == 'U') ny++;
             if (dir == 'D') ny--;
