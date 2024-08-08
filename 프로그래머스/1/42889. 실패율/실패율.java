@@ -14,7 +14,7 @@ class Solution {
         double totalPlayers = stages.length;
         
         for (int i = 1; i <= N; i++) {
-            if (player[i] == 0) {
+            if (totalPlayers == 0) {
                 answer.put(i,0.0);
             } else{
                 answer.put(i, player[i] / totalPlayers);
