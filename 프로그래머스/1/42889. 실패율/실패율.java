@@ -1,5 +1,4 @@
 import java.util.*;
-import java.util.stream.*;
 
 class Solution {
     public int[] solution(int N, int[] stages) {
@@ -12,15 +11,15 @@ class Solution {
         }
         
         Map<Integer, Double> answer = new HashMap<>();
-        int totalPlayers = stages.length;
+        double totalPlayers = stages.length;
         
         for (int i = 1; i <= N; i++) {
-            if (totalPlayers == 0) {
-                answer.put(i, 0.0);
-            } else {
-                answer.put(i, (double) player[i] / totalPlayers);
+            if (player[i] == 0) {
+                answer.put(i,0.0);
+            } else{
+                answer.put(i, player[i] / totalPlayers);
+                totalPlayers -= player[i];   
             }
-            totalPlayers -= player[i];
         }
         
         return answer.entrySet().stream()
