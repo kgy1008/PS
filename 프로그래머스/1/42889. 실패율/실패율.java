@@ -3,37 +3,29 @@ import java.util.stream.*;
 
 class Solution {
     public int[] solution(int N, int[] stages) {
-        Map<Integer, Float> failureRates = new HashMap<>();
+        int[] player = new int[N + 2];
         
-        for (int stage = 1; stage <= N; stage++) {
-            int totalPlayers = 0;
-            int failedPlayers = 0;
-            
-            for (int i = 0; i < stages.length; i++) {
-                if (stages[i] >= stage) {
-                    totalPlayers++;
-                }
-                if (stages[i] == stage) {
-                    failedPlayers++;
-                }
+        for (int i = 0; i < stages.length; i++) {
+            if (stages[i] <= N) {
+                player[stages[i]]++;
             }
-            
-            float failureRate = (totalPlayers == 0) ? 0 : (float) failedPlayers / totalPlayers;
-            failureRates.put(stage, failureRate);
         }
         
-        Map<Integer, Float> sortedMap = failureRates.entrySet()
-            .stream()
-            .sorted((e1, e2) -> e2.getValue().compareTo(e1.getValue()))
-            .collect(Collectors.toMap(
-                Map.Entry::getKey,
-                Map.Entry::getValue,
-                (e1, e2) -> e1, 
-                LinkedHashMap::new 
-            ));
-
-        int[] sortedKeys = sortedMap.keySet().stream().mapToInt(i -> i).toArray();
-   
-        return sortedKeys;
+        Map<Integer, Double> answer = new HashMap<>();
+        int totalPlayers = stages.length;
+        
+        for (int i = 1; i <= N; i++) {
+            if (totalPlayers == 0) {
+                answer.put(i, 0.0);
+            } else {
+                answer.put(i, (double) player[i] / totalPlayers);
+            }
+            totalPlayers -= player[i];
+        }
+        
+        return answer.entrySet().stream()
+            .sorted((o1, o2) -> Double.compare(o2.getValue(), o1.getValue()))
+            .mapToInt(Map.Entry::getKey)
+            .toArray();
     }
 }
