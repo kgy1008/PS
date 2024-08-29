@@ -9,12 +9,13 @@ class Solution {
             orange.put(cnt,orange.getOrDefault(cnt,0) + 1);
         }
         
-        List<Map.Entry<Integer, Integer>> entryList = new LinkedList<>(orange.entrySet());
-        entryList.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
+        List<Integer> count = new ArrayList<>(orange.values());
+        Collections.sort(count, Comparator.reverseOrder());
         
-        for(Map.Entry<Integer, Integer> entry : entryList) {
+        
+        for(int o : count) {
             if (k <= 0) break;
-            k -= entry.getValue();
+            k -= o;
             answer++;
         }
         
