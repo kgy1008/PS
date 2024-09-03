@@ -1,44 +1,38 @@
-import java.util.HashMap;
-
-class Person {
-    String name;
-    Person parent;
-    int money;
-
-    public Person(String name, Person parent, int money) {
-        this.name = name;
-        this.parent = parent;
-        this.money = money;
-    }
-
-    void getReward(int i) {
-        int moneyToParent = (int) (i * 0.1);
-        this.money += i - moneyToParent;
-        if (this.parent != null)
-            this.parent.getReward(moneyToParent);
-    }
-}
+import java.util.*;
 
 class Solution {
+    
     public int[] solution(String[] enroll, String[] referral, String[] seller, int[] amount) {
-        HashMap<String, Person> personHashMap = new HashMap<>();
-        for (String name : enroll)
-            personHashMap.put(name, new Person(name, null, 0));
-
-        for (int i = 0; i < enroll.length; i++) {
-            if (referral[i].equals("-"))
-                continue;
-            personHashMap.get(enroll[i]).parent = personHashMap.get(referral[i]);
+        HashMap<String, String> user = new HashMap<>();
+        HashMap<String, Integer> sell = new HashMap<>();
+        int[] answer = new int[enroll.length];
+        
+        HashMap<String, Integer> indexMap = new HashMap<>();
+        
+        for (int i=0; i<enroll.length; i++) {
+            user.put(enroll[i], referral[i]);
+            indexMap.put(enroll[i], i);
         }
-
-        for (int i = 0; i < seller.length; i++)
-            personHashMap.get(seller[i]).getReward(amount[i] * 100);
-
-        int[] result = new int[enroll.length];
-
-        for (int i = 0; i < result.length; i++)
-            result[i] = personHashMap.get(enroll[i]).money;
-
-        return result;
+        
+        for (int i=0; i<seller.length; i++) {
+            String s = seller[i];
+            int money = amount[i] * 100;
+            distributeProfit(s, money, user, sell);
+        }
+        
+        for (int i=0; i<enroll.length; i++) {
+            answer[i] = sell.getOrDefault(enroll[i], 0);
+        }
+        
+        return answer;
+    }
+    
+    private void distributeProfit(String s, int money, HashMap<String, String> user, HashMap<String, Integer> sell) {
+        if (s.equals("-") || money < 1) return;
+        
+        int profitToKeep = money - (money / 10);
+        sell.put(s, sell.getOrDefault(s, 0) + profitToKeep);
+        
+        distributeProfit(user.get(s), money / 10, user, sell);
     }
 }
