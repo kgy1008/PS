@@ -2,27 +2,27 @@ import java.util.*;
 
 class Solution {
     public int[] solution(int N, int[] stages) {
-        int[] player = new int[N + 2];
+        HashMap<Integer, Integer> count = new HashMap<>();
         
-        for (int i = 0; i < stages.length; i++) {
-            if (stages[i] <= N) {
-                player[stages[i]]++;
-            }
+        for (int stage : stages) {
+            count.put(stage, count.getOrDefault(stage, 0) + 1);
         }
         
-        Map<Integer, Double> answer = new HashMap<>();
-        double totalPlayers = stages.length;
+        HashMap<Integer, Double> fail = new HashMap<>();
+        double person = stages.length;  
         
         for (int i = 1; i <= N; i++) {
-            if (totalPlayers == 0) {
-                answer.put(i,0.0);
-            } else{
-                answer.put(i, player[i] / totalPlayers);
-                totalPlayers -= player[i];   
+            if (person == 0) {
+                fail.put(i, 0.0); 
+                continue;
             }
+            
+            double currentStageCount = count.getOrDefault(i, 0); 
+            fail.put(i, currentStageCount / person);  
+            person -= currentStageCount; 
         }
         
-        return answer.entrySet().stream()
+        return fail.entrySet().stream()
             .sorted((o1, o2) -> Double.compare(o2.getValue(), o1.getValue()))
             .mapToInt(Map.Entry::getKey)
             .toArray();
