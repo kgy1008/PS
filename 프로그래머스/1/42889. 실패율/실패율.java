@@ -2,10 +2,10 @@ import java.util.*;
 
 class Solution {
     public int[] solution(int N, int[] stages) {
-        HashMap<Integer, Integer> count = new HashMap<>();
+        int[] count = new int[N+2];
         
         for (int stage : stages) {
-            count.put(stage, count.getOrDefault(stage, 0) + 1);
+            count[stage] += 1;
         }
         
         HashMap<Integer, Double> fail = new HashMap<>();
@@ -17,7 +17,7 @@ class Solution {
                 continue;
             }
             
-            double currentStageCount = count.getOrDefault(i, 0); 
+            double currentStageCount = count[i]; 
             fail.put(i, currentStageCount / person);  
             person -= currentStageCount; 
         }
