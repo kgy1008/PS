@@ -1,38 +1,51 @@
 import java.util.*;
 
 class Solution {
-    private static boolean isValidMove(int nx, int ny) {
-        return 0 <= nx && nx < 11 && 0 <= ny && ny < 11;
-    }
-    
-    private static final HashMap<Character, int[]> location = new HashMap<>();
-    
-    private static void initLocation() {
-        location.put('U', new int[]{0, 1}); 
-        location.put('D', new int[]{0, -1});
-        location.put('L', new int[]{-1, 0});
-        location.put('R', new int[]{1, 0});
-    }
-    
     public int solution(String dirs) {
-        initLocation();
-        int x = 5, y = 5;
+        int x = 0; 
+        int y = 0;
         
-        HashSet<String> answer = new HashSet<>();
+        HashSet<String> check = new HashSet<>();
+        int answer = 0;
         
-        for (int i = 0; i < dirs.length(); i++) {
-            int[] offset = location.get(dirs.charAt(i));
-            int nx = x + offset[0];
-            int ny = y + offset[1];
+        for (Character d : dirs.toCharArray()) {
+            int nx = x; 
+            int ny = y;
             
-            if (!isValidMove(nx, ny)) continue;
+            if (d == 'U') {
+                ny = y+1;
+            }
+            else if (d == 'D') {
+                ny = y-1;
+            }
             
-            answer.add(x + "," + y + "," + nx + "," + ny);
-            answer.add(nx + "," + ny + "," + x + "," + y);
+            else if (d == 'R') {
+                nx = x+1;
+            }
+            else {
+                nx = x-1;
+            }
             
-            x = nx;
-            y = ny;
+            if (nx >= -5 && nx <= 5 && ny >= -5 && ny <= 5) {
+                StringBuffer sb1 = new StringBuffer();
+                String reverse = sb1.append(nx).append(ny).append(x).append(y).toString();
+
+                StringBuffer sb2 = new StringBuffer();
+                String load = sb2.append(x).append(y).append(nx).append(ny).toString();
+
+                if (!check.contains(load)) {
+                    answer++;   
+                    check.add(load);
+                    check.add(reverse);
+                }
+
+                x = nx;
+                y = ny;
+            }
+            
+            
         }
-        return answer.size() / 2;
+        
+        return answer;
     }
 }
