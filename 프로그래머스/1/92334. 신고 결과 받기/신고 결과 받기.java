@@ -2,44 +2,46 @@ import java.util.*;
 
 class Solution {
     public int[] solution(String[] id_list, String[] report, int k) {
-        HashMap<String, Integer> cnt = new HashMap<>();
-        HashMap<String, HashSet<String>> warn = new HashMap<>();
+        LinkedHashMap<String, Set<String>> warnList = new LinkedHashMap<>();
+        HashMap<String, Integer> warnCount = new HashMap<>();
         
-        for (String id : id_list) {
-            cnt.put(id, 0); 
-            warn.put(id, new HashSet<>()); 
+        for (String name : id_list) {
+            warnList.put(name, new HashSet<String>());
         }
         
-        for (String rep : report) {
-            String[] warnList = rep.split(" ");
-            String reporter = warnList[0]; 
-            String target = warnList[1]; 
+        for (String r : report) {
+            String[] reportName = r.split(" ");
             
-            if (!warn.get(reporter).contains(target)) {
-                warn.get(reporter).add(target);
-                cnt.put(target, cnt.get(target) + 1);
+            Set<String> nameSet = warnList.get(reportName[0]);
+            if (!nameSet.contains(reportName[1])) {
+                nameSet.add(reportName[1]);
+                warnList.put(reportName[0], nameSet);
+            
+                warnCount.put(reportName[1], warnCount.getOrDefault(reportName[1], 0) + 1);
             }
         }
         
-        List<String> result = new ArrayList<>();
-
-        for (Map.Entry<String, Integer> entry : cnt.entrySet()) {
-            if (entry.getValue() >= k) {
-                result.add(entry.getKey());
+        ArrayList<String> stopPlayer = new ArrayList<>();
+        
+        for (String player : warnCount.keySet()) {
+            if (warnCount.get(player) >= k) {
+                stopPlayer.add(player);
             }
         }
         
-        int[] answer = new int[id_list.length];
+        stopPlayer.stream().forEach(System.out::println);
         
-        for (int i = 0; i < id_list.length; i++) {
-            int count = 0;
-            for (String n : warn.get(id_list[i])) {
-                if (result.contains(n)) {
-                    count++;
-                }
+        int[] result = new int[id_list.length];
+        int idx = 0;
+        
+        for (String reporter : warnList.keySet()) {
+            Set<String> r = warnList.get(reporter);
+            for (String sp : stopPlayer) {
+                if (r.contains(sp)) result[idx]++;
             }
-            answer[i] = count;
+            idx++;
         }
-        return answer;
+        
+        return result;
     }
 }
