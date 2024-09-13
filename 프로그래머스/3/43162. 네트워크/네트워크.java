@@ -1,36 +1,31 @@
-import java.util.*;
+public class Solution {
 
-class Solution {
-    int[] parent;
-    
-    public int solution(int n, int[][] computers) {
-        parent = new int[n];  
-        for (int i=0; i<n; i++) {
-            parent[i] = i;
-        }
-        
-        for (int i=0; i<n; i++) {  
-            for (int j=i+1; j<n; j++) {
-                if (computers[i][j]==1) union(i,j);
+    private static boolean[] visit;
+    private static int[][] computer;
+
+    private static void dfs(int now) {
+        visit[now] = true; // ❶ 현재 노드 방문 처리
+        for (int i = 0; i < computer[now].length; i++) {
+            // ❷ 연결되어 있으며 방문하지 않은 노드라면
+            if (computer[now][i] == 1 && !visit[i]) {
+                dfs(i); // ❸ 해당 노드를 방문하러 이동
             }
         }
-        
-        HashSet<Integer> answer = new HashSet<>();
-        for (int i=0; i<n; i++) {
-            answer.add(find(i));  
+    }
+
+    public int solution(int n, int[][] computers) {
+        int answer = 0;
+        computer = computers;
+        visit = new boolean[n]; // ❹ 방문 여부를 저장할 배열
+
+        for (int i = 0; i < n; i++) {
+            if (!visit[i]) { // ❺ 아직 방문하지 않은 노드라면 해당 노드를 시작으로 깊이 우선 탐색 진행
+                dfs(i);
+                answer++; // ❻ DFS로 연결된 노드들을 모두 방문하면서 네트워크 개수 증가
+            }
         }
-        
-        return answer.size();        
+
+        return answer;
     }
-    
-    private int find(int x) {
-        if (parent[x] == x) return x;
-        return parent[x] = find(parent[x]); 
-    }
-    
-    private void union(int x, int y) {
-        int root1 = find(x);
-        int root2 = find(y);
-        parent[root2] = root1; 
-    }
+
 }
