@@ -45,10 +45,11 @@ class Solution {
         
         if (max == score && max > 0) {
             for (int i = 10; i>= 0; i--) {
-                if (answer[i] != ryan[i]) {
-                    if (answer[i] < ryan[i]) {
-                        answer = ryan.clone();
-                    }
+                if (answer[i] < ryan[i]) {
+                    answer = ryan.clone();
+                    break;
+                }
+                else if(answer[i] > ryan[i]) { 
                     break;
                 }
             }
