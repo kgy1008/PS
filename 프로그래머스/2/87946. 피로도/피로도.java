@@ -2,20 +2,18 @@ class Solution {
     int answer = 0;
     boolean[] visited;
     
-    
     public int solution(int k, int[][] dungeons) {
         visited = new boolean[dungeons.length];
-        
-        backtracking(k,0,dungeons);
+        backtrack(k, dungeons, 0);
         return answer;
     }
     
-    private void backtracking(int k, int cnt, int[][] dungeons) {
+    private void backtrack(int k, int[][]dungeons, int cnt) {
         for (int i=0; i<dungeons.length; i++) {
-            if (!visited[i] && k>= dungeons[i][0]) {
+            if (k>= dungeons[i][0] && !visited[i]) {
                 visited[i] = true;
-                backtracking(k-dungeons[i][1], cnt+1, dungeons);
-                answer = Math.max(answer, cnt+1);
+                backtrack(k-dungeons[i][1], dungeons, cnt+1);
+                answer = Math.max(answer,cnt+1);
                 visited[i] = false;
             }
         }
