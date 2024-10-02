@@ -16,9 +16,6 @@ class Solution {
             dp2[i] = Math.max(dp2[i-2] + money[i], dp2[i-1]);
         }
         
-        int max1 = Arrays.stream(dp1).max().getAsInt();
-        int max2 = Arrays.stream(dp2).max().getAsInt();
-        
-        return Math.max(max1, max2);
+        return Math.max(dp1[n-2], dp2[n-1]);
     }
 }
