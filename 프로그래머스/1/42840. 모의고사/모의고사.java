@@ -2,33 +2,36 @@ import java.util.*;
 
 class Solution {
     public int[] solution(int[] answers) {
-        int[][] arr = {
-            {1,2,3,4,5},
-            {2,1,2,3,2,4,2,5},
-            {3,3,1,1,2,2,4,4,5,5}
-        };
+        int[] person = new int[4];
+        int[] mark1 = new int[] {1,2,3,4,5};
+        int[] mark2 = new int[] {2,1,2,3,2,4,2,5};
+        int[] mark3 = new int[] {3,3,1,1,2,2,4,4,5,5};
         
-        int[] score = new int[3];
-        
-        for(int i = 0; i < answers.length; i++) {
-            for (int j = 0; j < 3; j ++) {
-                if (arr[j][i % arr[j].length] == answers[i]) {
-                    score[j]++;
-                }
+        for (int i=0; i<answers.length; i++) {
+            if (answers[i] == mark1[i%5]) {
+                person[1]++;
+            }
+            if (answers[i] == mark2[i%8]) {
+                person[2]++;
+            }
+            if (answers[i] == mark3[i%10]) {
+                person[3]++;
             }
         }
         
-        int maxScore = Arrays.stream(score).max().getAsInt();
-        ArrayList<Integer> result = new ArrayList<>();
-    
-        for (int i=0; i<3; i++) {
-            if (maxScore == score[i]) {
-                result.add(i+1);
+        ArrayList<Integer> ans = new ArrayList<>();
+        int max = 0;
+        for (int i : person) {
+            if (max < i) {
+                max = i;
             }
         }
         
-        return result.stream()
-            .mapToInt(Integer::intValue)
-            .toArray();
+        for  (int i=1; i<4; i++) {
+            if (max == person[i]) {
+                ans.add(i);
+            }
+        }
+        return ans.stream().mapToInt(Integer::intValue).toArray();
     }
 }
