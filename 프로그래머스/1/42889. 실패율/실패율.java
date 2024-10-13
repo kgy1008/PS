@@ -2,29 +2,26 @@ import java.util.*;
 
 class Solution {
     public int[] solution(int N, int[] stages) {
-        int[] count = new int[N+2];
+        int[] clear = new int[N+2];
+        int player = stages.length;
         
-        for (int stage : stages) {
-            count[stage] += 1;
+        for (int s : stages) {
+            clear[s]++;
         }
         
         HashMap<Integer, Double> fail = new HashMap<>();
-        double person = stages.length;  
+        double notClear = 0.0;
         
-        for (int i = 1; i <= N; i++) {
-            if (person == 0) {
-                fail.put(i, 0.0); 
+        for (int i=1; i<N+1; i++) {
+            if (player == 0) {
+                fail.put(i,0.0);
                 continue;
             }
-            
-            double currentStageCount = count[i]; 
-            fail.put(i, currentStageCount / person);  
-            person -= currentStageCount; 
+            notClear = clear[i];
+            fail.put(i, notClear/player);
+            player -= notClear;
         }
         
-        return fail.entrySet().stream()
-            .sorted((o1, o2) -> Double.compare(o2.getValue(), o1.getValue()))
-            .mapToInt(Map.Entry::getKey)
-            .toArray();
+        return fail.entrySet().stream().sorted((o1,o2) -> Double.compare(o2.getValue(), o1.getValue())).mapToInt(HashMap.Entry::getKey).toArray();
     }
 }
