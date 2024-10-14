@@ -9,6 +9,8 @@ class Solution {
         }
         
         if (num.size() == 0) return new int[]{-1};
-        return num.stream().sorted().mapToInt(Integer::intValue).toArray();
+        int[] answer = num.stream().mapToInt(Integer::intValue).toArray();
+        Arrays.sort(answer);
+        return answer;
     }
 }
