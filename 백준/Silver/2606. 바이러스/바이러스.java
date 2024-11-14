@@ -8,6 +8,7 @@ import java.util.StringTokenizer;
 public class Main {
     private static ArrayList<Integer>[] computers;
     private static boolean[] visited;
+    private static int answer = 0;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -29,19 +30,14 @@ public class Main {
         }
 
         dfs(1);
-        int ans = 0;
-        for (boolean i : visited) {
-            if (i) {
-                ans++;
-            }
-        }
-        System.out.println(ans-1);
+        System.out.println(answer);
     }
 
     private static void dfs(int start) {
         visited[start] = true;
         for (int next : computers[start]) {
             if (!visited[next]) {
+                answer++;
                 dfs(next);
             }
         }
