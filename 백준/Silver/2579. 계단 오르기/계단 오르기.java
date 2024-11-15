@@ -6,22 +6,13 @@ public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int n = Integer.parseInt(br.readLine());
-        int[] stairs = new int[n + 1];
+        int[] stairs = new int[301];
+        int[] dp = new int[301];
 
         for (int i = 1; i <= n; i++) {
             stairs[i] = Integer.parseInt(br.readLine());
         }
-        
-        if (n == 1) {
-            System.out.println(stairs[1]);
-            return;
-        } 
-        if (n == 2) {
-            System.out.println(stairs[2] + stairs[1]);
-            return;
-        }
 
-        int[] dp = new int[n+1];
         dp[1] = stairs[1];
         dp[2] = stairs[1] + stairs[2];
         dp[3] = Math.max(stairs[1], stairs[2]) + stairs[3];
