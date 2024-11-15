@@ -24,14 +24,14 @@ public class Main {
             }
         }
 
-        bfs(0, 0);
+        bfs();
         System.out.println(board[n - 1][m - 1]);
     }
 
-    private static void bfs(int k, int h) {
+    private static void bfs() {
         Deque<int[]> deque = new ArrayDeque<>();
-        deque.add(new int[]{k, h});
-        board[k][h] = 1;
+        deque.add(new int[]{0, 0});
+        board[0][0] = 1;
 
         while (!deque.isEmpty()) {
             int[] tmp = deque.poll();
