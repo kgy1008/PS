@@ -23,15 +23,17 @@ public class Main {
             }
         }
 
+        outer:
         for (int col = 0; col < n; col++) {
             for (int row = 0; row < m; row++) {
                 if (board[col][row] == 'I') {
                     dfs(col, row);
-                    System.out.println(ans == 0 ? "TT" : ans);
-                    return;
+                    break outer;
                 }
             }
         }
+
+        System.out.println(ans == 0 ? "TT" : ans);
     }
 
     private static void dfs(int x, int y) {
