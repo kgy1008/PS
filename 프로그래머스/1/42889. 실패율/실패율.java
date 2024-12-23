@@ -23,11 +23,9 @@ class Solution {
             person -= arrived;
         }
         
-        List<Integer> answer = detail.entrySet().stream()
+        return detail.entrySet().stream()
             .sorted((o1,o2) -> Double.compare(o2.getValue(), o1.getValue()))
-            .map(i-> i.getKey())
-            .collect(Collectors.toList());
-        
-        return answer.stream().mapToInt(Integer::intValue).toArray();
+            .mapToInt(i-> i.getKey())
+            .toArray();
     }
 }
