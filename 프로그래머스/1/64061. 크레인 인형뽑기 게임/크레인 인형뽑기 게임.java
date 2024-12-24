@@ -2,30 +2,35 @@ import java.util.*;
 
 class Solution {
     public int solution(int[][] board, int[] moves) {
-        int answer = 0;
+        Deque<Integer> stack = new ArrayDeque<>();
+        List<Deque<Integer>> doll = new ArrayList<>();
         
-        ArrayDeque<Integer>[] deques = new ArrayDeque[board[0].length];
-        for (int i = 0; i < board[0].length; i++) {
-            deques[i] = new ArrayDeque<Integer>();
-            for (int j = board.length - 1; j >= 0; j--) {
-                if (board[j][i] != 0) { 
-                    deques[i].push(board[j][i]);
+        for (int i=0; i<board.length; i++) {
+            doll.add(new ArrayDeque<Integer>());
+        }
+        
+        for (int i=0; i<board.length; i++) {
+            for (int j=0; j<board.length; j++) {
+                Deque<Integer> tmp = doll.get(i);
+                if (board[j][i] != 0) {
+                    tmp.add(board[j][i]); 
                 }
             }
         }
         
-        ArrayDeque<Integer> box = new ArrayDeque<>();
+        int answer = 0;
         
         for (int move : moves) {
-            int index = move - 1; 
-            if (!deques[index].isEmpty()) {
-                int doll = deques[index].pop();
-                if (!box.isEmpty() && box.peek() == doll) {
-                    box.pop(); 
-                    answer += 2;
-                } else {
-                    box.push(doll); 
+            int idx = move - 1;
+            Deque<Integer> tmp = doll.get(idx);
+            if (tmp.size() != 0) {
+                int target = tmp.poll();
+                if (!stack.isEmpty() && stack.peek() == target) {
+                    stack.pop();
+                    answer+=2;
+                    continue;
                 }
+                stack.push(target);
             }
         }
         
