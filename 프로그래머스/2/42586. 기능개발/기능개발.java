@@ -2,24 +2,32 @@ import java.util.*;
 
 class Solution {
     public int[] solution(int[] progresses, int[] speeds) {
-        Deque<Integer> remainDay = new ArrayDeque<>();
+        Deque<Integer> remainDate = new ArrayDeque<>();
         
         for (int i=0; i<progresses.length; i++) {
-            remainDay.offer((100 - progresses[i] + speeds[i] - 1) / speeds[i]);
+            int remain = 100 - progresses[i];
+            if (remain % speeds[i] == 0) {
+                remainDate.offer(remain/speeds[i]);
+            } else {
+                remainDate.offer(remain/speeds[i] + 1);
+            }   
         }
         
-        List<Integer> ans = new ArrayList<>();
-        
-        while (!remainDay.isEmpty()) {
-            int count = 0;
-            int firstWork = remainDay.peekFirst();
-            while (!remainDay.isEmpty() && firstWork >= remainDay.peekFirst()) {
-                remainDay.poll();
-                count++;
+        List<Integer> answer = new ArrayList<>();
+        while (!remainDate.isEmpty()) {
+            int cnt = 1;
+            int done = remainDate.poll();
+            while (!remainDate.isEmpty() && done >= remainDate.peek()) {
+                cnt++;
+                remainDate.poll();
             }
-            ans.add(count);
+            answer.add(cnt);
+            
+            for (int date : remainDate) {
+                date -= done;
+            }
         }
         
-        return ans.stream().mapToInt(Integer::intValue).toArray();
+        return answer.stream().mapToInt(Integer::intValue).toArray();
     }
 }
