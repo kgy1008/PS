@@ -2,31 +2,27 @@ import java.util.*;
 
 class Solution {
     public String solution(String[] cards1, String[] cards2, String[] goal) {
-        String answer = "Yes";
-        ArrayDeque<String> queue1 = new ArrayDeque<>();
-        ArrayDeque<String> queue2 = new ArrayDeque<>();
+        Deque<String> card1 = new ArrayDeque<>();
+        Deque<String> card2 = new ArrayDeque<>();
         
-        for (String card : cards1) {
-            queue1.add(card);
+        for (String c1 : cards1) {
+            card1.offer(c1);
+        }
+        for (String c2 : cards2) {
+            card2.offer(c2);
         }
         
-        for (String card : cards2) {
-            queue2.add(card);
-        }
-        
-        for (int i = 0; i<goal.length; i++) {
-            if (goal[i].equals(queue1.peekFirst())) {
-                queue1.pollFirst();
+        for (String target : goal) {
+            if (target.equals(card1.peek())) {
+                card1.poll();
             }
-            else if (goal[i].equals(queue2.peekFirst())) {
-                queue2.pollFirst();
-            }
-            else {
-                answer = "No";
-                break;
+            else if (target.equals(card2.peek())) {
+                card2.poll();
+            } else {
+                return "No";
             }
         }
         
-        return answer;
+        return "Yes";
     }
 }
