@@ -2,29 +2,34 @@ import java.util.*;
 
 class Solution {
     public String[] solution(String[] record) {
-        HashMap<String, String> nickname = new HashMap<>();
-        List<String> ans = new ArrayList<>();
-        
-        for (String r : record) {
-            String[] command = r.split(" ");
-            if (!command[0].equals("Leave")) {
-                nickname.put(command[1], command[2]);
-            }
-        }
-        
-        for (String r : record) {
-            String[] command = r.split(" ");
-            String user = nickname.get(command[1]);
+        Map<String, String> name = new HashMap<>();
+        for (String command : record) {
+            String[] commands = command.split(" ");
             
-            if (command[0].equals("Leave")) {
-                ans.add(String.format("%s님이 나갔습니다.", user));
-            }
-            else if (command[0].equals("Enter")) {
-                ans.add(String.format("%s님이 들어왔습니다.", user));
+            if (commands[0].equals("Enter")) {
+                name.put(commands[1], commands[2]);
+            } 
+            if (commands[0].equals("Change")) {
+                name.put(commands[1], commands[2]);
             }
         }
         
-        return ans.toArray(new String[0]);
+        List<String> answer = new ArrayList<>();
+        for (String command : record) {
+            String[] commands = command.split(" ");
+            if (commands[0].equals("Enter")) {
+                answer.add(String.format("%s님이 들어왔습니다.", name.get(commands[1])));
+            } 
+            if (commands[0].equals("Leave")) {
+                answer.add(String.format("%s님이 나갔습니다.", name.get(commands[1])));
+            }
+        }
+        int len = answer.size();
+        String[] result = new String[len];
         
+        for (int i=0; i<answer.size(); i++) {
+            result[i] = answer.get(i);
+        }
+        return result;
     }
 }
