@@ -22,10 +22,6 @@ class Solution {
                 remainDate.poll();
             }
             answer.add(cnt);
-            
-            for (int date : remainDate) {
-                date -= done;
-            }
         }
         
         return answer.stream().mapToInt(Integer::intValue).toArray();
