@@ -1,40 +1,42 @@
 import java.util.*;
-import java.util.stream.*;
 
 class Solution {
     public int[] solution(String[] id_list, String[] report, int k) {
-        Map<String, List<String>> map = new LinkedHashMap<>();
+        Map<String, Set<String>> map = new HashMap<>();
         
         for (String id : id_list) {
-            map.put(id, new ArrayList<>());
+            map.put(id, new HashSet<>());
         }
-        
-        Map<String, Integer> warnCount = new HashMap<>();
         
         for (String r : report) {
             String[] info = r.split(" ");
-            List<String> list = map.get(info[0]);
-            if (!list.contains(info[1])) {
-                list.add(info[1]);
-                warnCount.put(info[1], warnCount.getOrDefault(info[1], 0) + 1);
+            Set<String> tmp = map.get(info[1]);
+            tmp.add(info[0]);
+        }
+        
+        List<String> out = new ArrayList<>();
+        
+        for (String s : map.keySet()) {
+            Set<String> tmp = map.get(s);
+            if (tmp.size() >= k) {
+                out.add(s);
             }
         }
         
-        List<String> out = warnCount.entrySet().stream()
-            .filter(o-> o.getValue() >= k)
-            .map(o -> o.getKey())
-             .collect(Collectors.toList());
+        int n = id_list.length;
+        int[] result = new int[n];
         
-        int[] result = new int[id_list.length];
-        
-        for (int i=0; i<id_list.length; i++) {
+        for (int i=0; i<n; i++) {
+            String target = id_list[i];
             int cnt = 0;
-            List<String> target = map.get(id_list[i]);
-            for (String o : out) {
-                if (target.contains(o)) {
+            
+            for (String s : out) {
+                Set<String> tmp = map.get(s);
+                if (tmp.contains(target)) {
                     cnt++;
                 }
             }
+            
             result[i] = cnt;
         }
         
