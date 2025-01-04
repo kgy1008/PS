@@ -2,19 +2,26 @@ import java.util.*;
 
 class Solution {
     public String solution(int[] numbers) {
-        Integer[] nums = Arrays.stream(numbers).boxed().toArray(Integer[]::new);
-
-        Arrays.sort(nums, (a, b) -> (b.toString() + a.toString()).compareTo(a.toString() + b.toString()));
+        List<String> list = new ArrayList<>();
+        for (int number : numbers) {
+            list.add(String.valueOf(number));
+        }
+        
+        list.sort((o1,o2) -> {
+            int a = Integer.parseInt(o1 + o2);
+            int b = Integer.parseInt(o2 + o1);
+            return Integer.compare(b,a);
+        });
         
         StringBuilder sb = new StringBuilder();
-        for (int num : nums) {
-            sb.append(num);
+        
+        for (String s : list) {
+            sb.append(s);
         }
         
         if (sb.charAt(0) == '0') {
             return "0";
         }
-
         return sb.toString();
     }
 }
