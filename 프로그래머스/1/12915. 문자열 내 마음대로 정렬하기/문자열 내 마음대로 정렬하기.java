@@ -1,10 +1,14 @@
-import java.util.Arrays;
+import java.util.*;
 
-public class Solution {
-
+class Solution {
     public String[] solution(String[] strings, int n) {
-        Arrays.sort(strings, (o1, o2) -> o1.charAt(n) == o2.charAt(n) ? o1.compareTo(o2) : Character.compare(o1.charAt(n), o2.charAt(n)));
-        return strings;
+        List<String> list = new ArrayList<>();
+        for (String s : strings) {
+            list.add(s);
+        }
+        list.sort(null);
+        list.sort((o1,o2) -> Integer.compare(o1.charAt(n), o2.charAt(n)));
+        
+        return list.toArray(new String[0]);
     }
-
 }
