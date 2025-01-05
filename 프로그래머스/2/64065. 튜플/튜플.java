@@ -2,28 +2,26 @@ import java.util.*;
 
 class Solution {
     public int[] solution(String s) {
-        Set<Integer> ans = new LinkedHashSet<>();
-        
-        s = s.replaceAll("\\{\\{", "").replaceAll("\\}\\}", "");
-        String[] groups = s.split("\\},\\{");
-        
-        ArrayList<ArrayList<Integer>> result = new ArrayList<>();
-
-        for (String group : groups) {
-            ArrayList<Integer> tempList = new ArrayList<>();
-            for (String num : group.split(",")) {
-                tempList.add(Integer.parseInt(num));
-            }
-            result.add(tempList);
+        String[] arr = s.split("},");
+        String[] result = new String[arr.length];
+        int idx = 0;
+        for (String target : arr) {
+            target = target.replace("{","").replace("}","");
+            result[idx++] = target;
         }
         
-        Collections.sort(result, (a, b) -> Integer.compare(a.size(), b.size()));
-        
-        for (ArrayList<Integer> r : result) {
-            for (int i : r) {
-                ans.add(i);
+        List<Integer> answer = new ArrayList<>();
+        Arrays.sort(result, (o1,o2) -> Integer.compare(o1.length(), o2.length()));
+        for (String r : result) {
+            String[] tmp = r.split(",");
+            for (String t : tmp) {
+                int a = Integer.parseInt(t);
+                if (!answer.contains(a)) {
+                    answer.add(a);   
+                }
             }
         }
-        return ans.stream().mapToInt(Integer::intValue).toArray();
+        
+        return answer.stream().mapToInt(Integer::intValue).toArray();
     }
 }
