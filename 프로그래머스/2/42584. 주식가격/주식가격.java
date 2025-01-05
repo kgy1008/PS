@@ -2,23 +2,23 @@ import java.util.*;
 
 class Solution {
     public int[] solution(int[] prices) {
+        Deque<Integer> stack = new ArrayDeque<>();
+        stack.push(0);
         int[] answer = new int[prices.length];
-        Deque<int[]> stack = new ArrayDeque<>();
         
-        for (int i = 0; i<prices.length; i++) {
-            while (!stack.isEmpty() && stack.peek()[1] > prices[i]) {
-                int[] tmp = stack.pop();
-                int idx = tmp[0];
+        for (int i=1; i<prices.length; i++) {
+            while (!stack.isEmpty() && prices[stack.peek()] > prices[i]) {
+                int idx = stack.pop();
                 answer[idx] = i - idx;
             }
-            stack.push(new int[]{i, prices[i]});
+            stack.push(i);
         }
         
-        int lastIdx = prices.length - 1;
+        int maxIdx = prices.length-1;
+      
         while (!stack.isEmpty()) {
-            int[] tmp = stack.pop();
-            int idx = tmp[0];
-            answer[idx] = lastIdx-idx;
+            int idx = stack.pop();
+            answer[idx] = maxIdx - idx;
         }
         
         return answer;
