@@ -2,13 +2,14 @@ import java.util.*;
 
 class Solution {
     public String[] solution(String[] strings, int n) {
-        List<String> list = new ArrayList<>();
-        for (String s : strings) {
-            list.add(s);
-        }
-        list.sort(null);
-        list.sort((o1,o2) -> Integer.compare(o1.charAt(n), o2.charAt(n)));
+        Arrays.sort(strings, (o1,o2) -> {
+            int result = Character.compare(o1.charAt(n), o2.charAt(n));
+            if (result == 0) {
+                return o1.compareTo(o2);
+            }
+            return result;
+            });
         
-        return list.toArray(new String[0]);
+        return strings;
     }
 }
