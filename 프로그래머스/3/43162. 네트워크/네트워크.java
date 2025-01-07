@@ -8,11 +8,9 @@ class Solution {
         visited = new boolean[n];
         
         for (int i=0; i<n; i++) {
-            for (int j=0; j<n; j++) {
-                if (computers[i][j] == 1 && !visited[j]) {
-                    dfs(j, computers);
-                    answer++;
-                }
+            if (!visited[i]) {
+                dfs(i, computers);
+                answer++;
             }
         }
         return answer;
