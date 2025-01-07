@@ -1,10 +1,12 @@
 import java.util.*;
 
 class Solution {
+    private static int[][] cost;
     private static int[] dx = {1,-1,0,0};
     private static int[] dy = {0,0,1,-1};
     
     public int solution(String[] maps) {
+        cost = new int[maps.length][maps[0].length()];
         int[] start = new int[2];
         int[] lever = new int[2];
         int[] exit = new int[2];
@@ -28,15 +30,19 @@ class Solution {
         }
         
         int r1 = bfs(start[0], start[1], maps, lever);
+        for (int i=0; i<cost.length; i++) {
+            for (int j=0; j<cost[0].length; j++) {
+                cost[i][j] = 0;
+            }
+        }
         int r2 = bfs(lever[0], lever[1], maps, exit);
-        if (r1 == -1 || r2 == -1) {
+        if (r1 == 0 || r2 == 0) {
             return -1;
         } 
         return r1+r2;
     }
     
     private static int bfs(int x, int y, String[] maps, int[] target) {
-        int[][] cost = new int[maps.length][maps[0].length()]; 
         Deque<int[]> queue = new ArrayDeque<>();
         queue.offer(new int[]{x, y});
         
@@ -59,6 +65,6 @@ class Solution {
                 }
             }
         }
-        return -1;
+        return cost[target[0]][target[1]];
     }
 }
