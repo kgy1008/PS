@@ -1,76 +1,64 @@
-import java.util.ArrayDeque;
+import java.util.*;
 
-public class Solution {
-    private static final int[] dx = {0, 0, -1, 1};
-    private static final int[] dy = {-1, 1, 0, 0};
-
-    private static class Point {
-        int nx, ny;
-
-        public Point(int nx, int ny) {
-            this.nx = nx;
-            this.ny = ny;
-        }
-    }
-
-    private static char[][] map;
-    private static int N, M;
-
+class Solution {
+    private static int[] dx = {1,-1,0,0};
+    private static int[] dy = {0,0,1,-1};
+    
     public int solution(String[] maps) {
-        N = maps.length;
-        M = maps[0].length();
-
-        map = new char[N][M];
-        for (int i = 0; i < N; i++) {
-            map[i] = maps[i].toCharArray();
-        }
-
-        Point start = null, end = null, lever = null;
-
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < M; j++) {
-                if (map[i][j] == 'S') start = new Point(j, i);
-                else if (map[i][j] == 'E') end = new Point(j, i);
-                else if (map[i][j] == 'L') lever = new Point(j, i);
+        int[] start = new int[2];
+        int[] lever = new int[2];
+        int[] exit = new int[2];
+        
+        for (int i=0; i<maps.length; i++) {
+            String tmp = maps[i];
+            for (int j=0; j<tmp.length(); j++) {
+                if (tmp.charAt(j) == 'S') {
+                    start[0] = i;
+                    start[1] = j;
+                }
+                else if (tmp.charAt(j) == 'L') {
+                    lever[0] = i;
+                    lever[1] = j;
+                }
+                else if (tmp.charAt(j) == 'E') {
+                    exit[0] = i;
+                    exit[1] = j;
+                }
             }
         }
-
-        int startLever = bfs(start, lever);
-        int leverEnd = bfs(lever, end);
-
-        if (startLever == -1 || leverEnd == -1)
+        
+        int r1 = bfs(start[0], start[1], maps, lever);
+        int r2 = bfs(lever[0], lever[1], maps, exit);
+        if (r1 == -1 || r2 == -1) {
             return -1;
-        else
-            return startLever + leverEnd;
+        } 
+        return r1+r2;
     }
-
-    private static int bfs(Point start, Point end) {
-        int[][] dist = new int[N][M];
-        ArrayDeque<Point> queue = new ArrayDeque<>();
-
-        dist[start.ny][start.nx] = 1;
-        queue.add(start);
-
+    
+    private static int bfs(int x, int y, String[] maps, int[] target) {
+        int[][] cost = new int[maps.length][maps[0].length()]; 
+        Deque<int[]> queue = new ArrayDeque<>();
+        queue.offer(new int[]{x, y});
+        
         while (!queue.isEmpty()) {
-            Point now = queue.poll();
-
-            for (int i = 0; i < 4; i++) {
-                int nextX = now.nx + dx[i];
-                int nextY = now.ny + dy[i];
-
-                if (nextX < 0 || nextX >= M || nextY < 0 || nextY >= N) continue;
-
-                if (dist[nextY][nextX] > 0 || map[nextY][nextX] == 'X') continue;
-
-                dist[nextY][nextX] = dist[now.ny][now.nx] + 1;
-
-                queue.add(new Point(nextX, nextY));
-
-                if (nextX == end.nx && nextY == end.ny)
-                    return dist[end.ny][end.nx] - 1;
+            int[] current = queue.poll();
+            for (int i=0; i<4; i++) {
+                int nx = current[0] + dx[i];
+                int ny = current[1] + dy[i];
+                
+                if (nx<0 || nx >= cost.length || ny<0 || ny >= cost[0].length) {
+                    continue;
+                }
+                
+                if (maps[nx].charAt(ny) != 'X' && cost[nx][ny] == 0) {
+                    cost[nx][ny] = cost[current[0]][current[1]] + 1;
+                    if (nx == target[0] && ny == target[1]) {
+                        return cost[nx][ny];
+                    }
+                    queue.offer(new int[]{nx,ny});
+                }
             }
         }
-
         return -1;
     }
 }
