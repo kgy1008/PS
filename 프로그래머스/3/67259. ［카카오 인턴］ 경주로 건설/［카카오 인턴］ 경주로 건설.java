@@ -1,59 +1,55 @@
 import java.util.*;
 
 class Solution {
-    private static final int[] dx = {0,0,-1,1};  
-    private static final int[] dy = {1,-1,0,0};  
+    private static final int INF = Integer.MAX_VALUE;
+    private static final int[] dx = {0, 0, 1, -1}; // 우, 좌, 하, 상
+    private static final int[] dy = {1, -1, 0, 0};
     
-    private static class Point {
-        int x;
-        int y;
-        int cost;  
-        int direction;   // 이전에 이동한 방향 (0: 가로, 1: 세로)
-        
-        public Point(int x, int y, int cost, int direction) {
-            this.x = x;
-            this.y = y;
-            this.cost = cost;
-            this.direction = direction;
-        }
-    }
-
     public int solution(int[][] board) {
         int n = board.length;
-        int[][][] money = new int[n][n][2];
-        
-        for (int i = 0; i < n; i++) {
-            for (int j=0; j<n; j++) {
-                Arrays.fill(money[i][j], Integer.MAX_VALUE);
+        int[][][] cost = new int[n][n][4]; // 방향별 코스트
+        for (int[][] arr : cost) {
+            for (int[] row : arr) {
+                Arrays.fill(row, INF);
             }
         }
-
-        ArrayDeque<Point> queue = new ArrayDeque<>();
         
-        queue.offer(new Point(0, 0, 0, -1));  // start (-1)
-        money[0][0][0] = 0;
-        money[0][0][1] = 0;
+        Queue<int[]> queue = new LinkedList<>();
+        
+        // 초기 상태 (x, y, 방향, 누적 비용)
+        for (int i = 0; i < 4; i++) {
+            queue.offer(new int[] {0, 0, i, 0});
+            cost[0][0][i] = 0;
+        }
         
         while (!queue.isEmpty()) {
-            Point now = queue.poll();
+            int[] cur = queue.poll();
+            int x = cur[0];
+            int y = cur[1];
+            int dir = cur[2];
+            int curCost = cur[3];
             
             for (int i = 0; i < 4; i++) {
-                int nx = now.x + dx[i];
-                int ny = now.y + dy[i];
+                int nx = x + dx[i];
+                int ny = y + dy[i];
+                int nextCost = curCost + (dir == i ? 100 : 600); // 같은 방향: 100, 회전: 600
                 
-                if (nx < 0 || nx >= n || ny < 0 || ny >= n || board[nx][ny] == 1) continue;
+                if (nx < 0 || nx >= n || ny < 0 || ny >= n || board[nx][ny] == 1) {
+                    continue;
+                }
                 
-                int newDirection = (i < 2) ? 0 : 1;
-                
-                int newCost = now.cost + (now.direction == -1 || now.direction == newDirection ? 100 : 600);
-                
-                if (money[nx][ny][newDirection] >= newCost) {
-                    money[nx][ny][newDirection] = newCost;
-                    queue.offer(new Point(nx, ny, newCost, newDirection));
+                if (nextCost < cost[nx][ny][i]) {
+                    cost[nx][ny][i] = nextCost;
+                    queue.offer(new int[] {nx, ny, i, nextCost});
                 }
             }
         }
         
-        return Math.min(money[n - 1][n - 1][0], money[n - 1][n - 1][1]) ;
+        // 목적지 최소 비용 계산
+        int answer = INF;
+        for (int i = 0; i < 4; i++) {
+            answer = Math.min(answer, cost[n - 1][n - 1][i]);
+        }
+        return answer;
     }
 }
