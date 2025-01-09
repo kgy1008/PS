@@ -1,38 +1,48 @@
 import java.util.*;
 
 class Solution {
-    ArrayList<Integer>[] nodes;
-    boolean[] visited;
-    int answer;
+    private static int count = 0; 
+    private static boolean[] visited;
+    private static List<Integer>[] adj;
     
     public int solution(int n, int[][] wires) {
-        answer = n-1;
         visited = new boolean[n+1];
-        nodes = new ArrayList[n+1];
-        
+        adj = new ArrayList[n+1];
         for (int i=1; i<n+1; i++) {
-            nodes[i] = new ArrayList<>();
-        }
-        for (int[] w : wires) {
-            nodes[w[0]].add(w[1]);
-            nodes[w[1]].add(w[0]);
+            adj[i] = new ArrayList<>();
         }
         
-        dfs(1, n);
+        for (int[] wire : wires) {
+            adj[wire[0]].add(wire[1]);
+            adj[wire[1]].add(wire[0]);
+        }
+        
+        int answer = n;
+        for (int[] wire : wires) {
+            dfs(1, wire);
+            int tmp = Math.abs(n - 2*count);
+            answer = Math.min(tmp, answer);
+            count = 0;
+            Arrays.fill(visited, false);
+        }
+        
         return answer;
     }
     
-    private int dfs(int start, int n) {
+    private static void dfs(int start, int[] wire) {
         visited[start] = true;
+        count++;
         
-        int sum = 0;
-        for (int node : nodes[start]) {
-            if (!visited[node]) {
-                int cnt = dfs(node, n);
-                answer = Math.min(answer, Math.abs(n - 2*cnt));
-                sum += cnt;
-            }    
+        for (int next : adj[start]) {
+            if (!visited[next]) {
+                if (start == wire[0] && next == wire[1]) {
+                    continue;
+                }
+                if (start == wire[1] && next == wire[0]) {
+                    continue;
+                }
+                dfs(next, wire);
+            }
         }
-        return sum + 1;
     }
 }
