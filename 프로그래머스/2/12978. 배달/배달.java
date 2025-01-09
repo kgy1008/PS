@@ -3,7 +3,6 @@ import java.util.*;
 class Solution {
     public int solution(int N, int[][] road, int K) {
         int[] dist = new int[N+1];
-        boolean[] visited = new boolean[N+1];
         
         List<Node>[] adj = new ArrayList[N+1];
         for (int i=1; i<N+1; i++) {
@@ -26,10 +25,9 @@ class Solution {
         
         while (!queue.isEmpty()) {
             Node current = queue.poll();
-            if (visited[current.num]) {
+            if (dist[current.num] < current.cost) {
                 continue;
             }
-            visited[current.num] = true;
             
             for (Node next : adj[current.num]) {
                 if (dist[next.num] > current.cost + next.cost) {
