@@ -2,24 +2,24 @@ import java.util.*;
 
 class Solution {
     private static final int INF = Integer.MAX_VALUE;
-    private static final int[] dx = {0, 0, 1, -1}; // 우, 좌, 하, 상
-    private static final int[] dy = {1, -1, 0, 0};
+    private static final int[] dx = {0, 1, 0, -1}; 
+    private static final int[] dy = {1, 0, -1, 0};
     
     public int solution(int[][] board) {
         int n = board.length;
-        int[][][] cost = new int[n][n][4]; // 방향별 코스트
+        int[][][] cost = new int[n][n][4]; 
+        
         for (int[][] arr : cost) {
             for (int[] row : arr) {
                 Arrays.fill(row, INF);
             }
         }
         
-        Queue<int[]> queue = new LinkedList<>();
+        Deque<int[]> queue = new ArrayDeque<>();
         
-        // 초기 상태 (x, y, 방향, 누적 비용)
         for (int i = 0; i < 4; i++) {
-            queue.offer(new int[] {0, 0, i, 0});
-            cost[0][0][i] = 0;
+            queue.offer(new int[] {0, 0, i, 0});  // x,y,direction,cost
+            cost[0][0][i] = 0; // 방향에 따른 비용 초기화
         }
         
         while (!queue.isEmpty()) {
@@ -32,7 +32,7 @@ class Solution {
             for (int i = 0; i < 4; i++) {
                 int nx = x + dx[i];
                 int ny = y + dy[i];
-                int nextCost = curCost + (dir == i ? 100 : 600); // 같은 방향: 100, 회전: 600
+                int nextCost = curCost + (dir % 2 == i % 2 ? 100 : 600); // 같은 방향: 100, 회전: 600
                 
                 if (nx < 0 || nx >= n || ny < 0 || ny >= n || board[nx][ny] == 1) {
                     continue;
@@ -45,7 +45,6 @@ class Solution {
             }
         }
         
-        // 목적지 최소 비용 계산
         int answer = INF;
         for (int i = 0; i < 4; i++) {
             answer = Math.min(answer, cost[n - 1][n - 1][i]);
