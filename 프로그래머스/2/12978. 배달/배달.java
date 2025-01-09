@@ -1,57 +1,60 @@
 import java.util.*;
 
 class Solution {
-    
-     private class Node {
-        int dest, cost;
-
-        public Node(int dest, int cost) {
-            this.dest = dest;
-            this.cost = cost;
-        }
-    }
-
     public int solution(int N, int[][] road, int K) {
-
-        ArrayList<Node>[] nodes = new ArrayList[N+1];
-        for (int i = 0; i < N+1; i++) {
-            nodes[i] = new ArrayList<>();
-        }
-
-        for (int[] edge : road) {
-            nodes[edge[0]].add(new Node(edge[1], edge[2]));
-            nodes[edge[1]].add(new Node(edge[0], edge[2]));
-        }
-
         int[] dist = new int[N+1];
-        Arrays.fill(dist, Integer.MAX_VALUE);
-
+        boolean[] visited = new boolean[N+1];
+        
+        List<Node>[] adj = new ArrayList[N+1];
+        for (int i=1; i<N+1; i++) {
+            adj[i] = new ArrayList<>();
+            dist[i] = 987654321;
+        }
+        
         dist[1] = 0;
 
-        PriorityQueue<Node> pq = new PriorityQueue<>((o1, o2) -> Integer.compare(o2.cost, o1.cost));
-        pq.add(new Node(1, 0));
-
-        while (!pq.isEmpty()) {
-            Node now = pq.poll();
-            
-            if (dist[now.dest] < now.cost) {
+        for (int[] r : road) {
+            int a = r[0];
+            int b = r[1];
+            int c = r[2];
+            adj[a].add(new Node(b,c));
+            adj[b].add(new Node(a,c));
+        }
+        
+        PriorityQueue<Node> queue = new PriorityQueue<>(Comparator.comparingInt(o1 -> o1.cost));
+        queue.add(new Node(1, 0));
+        
+        while (!queue.isEmpty()) {
+            Node current = queue.poll();
+            if (visited[current.num]) {
                 continue;
             }
+            visited[current.num] = true;
             
-            for (Node next : nodes[now.dest]) {
-                if (dist[next.dest] > now.cost + next.cost) {
-                    dist[next.dest] = now.cost + next.cost;
-                    pq.add(new Node(next.dest, dist[next.dest]));
+            for (Node next : adj[current.num]) {
+                if (dist[next.num] > current.cost + next.cost) {
+                    dist[next.num] = current.cost + next.cost;
+                    queue.offer(new Node(next.num, dist[next.num]));
                 }
-            }            
+            }
         }
-
+        
         int answer = 0;
-        
-        for (int d : dist) {
-            if (d <= K) answer++;
+        for (int i=1; i<N+1; i++) {
+            if (dist[i] <= K) {
+                answer++;
+            }
         }
-        
         return answer;
+    }
+    
+    private static class Node {
+        int num;
+        int cost;
+        
+        public Node(int num, int cost) {
+            this.num = num;
+            this.cost = cost;
+        }
     }
 }
