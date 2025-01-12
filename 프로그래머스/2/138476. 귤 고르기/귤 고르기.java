@@ -2,23 +2,19 @@ import java.util.*;
 
 class Solution {
     public int solution(int k, int[] tangerine) {
-        HashMap<Integer, Integer> map = new HashMap<>();
+        Map<Integer, Integer> map = new HashMap<>();
         for (int t : tangerine) {
             map.put(t, map.getOrDefault(t, 0) + 1);
         }
-        
-        List<Integer> sortedCount = new ArrayList<>(map.values());
-        sortedCount.sort((o1,o2) -> Integer.compare(o2,o1));
-        
+        List<Integer> sizes = new ArrayList<>(map.values());
+        sizes.sort(Collections.reverseOrder());
         int answer = 0;
-        int sum = 0;
-        
-        for (int count : sortedCount) {
-            sum += count;
+        int tmp = 0;
+        for (int s : sizes) {
             answer++;
-            
-            if (sum >= k) {
-                break;
+            tmp += s;
+            if (tmp >= k) {
+                return answer;
             }
         }
         
