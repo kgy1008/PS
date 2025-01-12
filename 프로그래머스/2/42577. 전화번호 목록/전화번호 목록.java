@@ -2,7 +2,6 @@ import java.util.*;
 
 class Solution {
     public boolean solution(String[] phone_book) {
-        Arrays.sort(phone_book, (o1,o2) -> Integer.compare(o2.length(), o1.length()));
         Set<String> list = new HashSet<>();
         for (String number : phone_book) {
             list.add(number);
