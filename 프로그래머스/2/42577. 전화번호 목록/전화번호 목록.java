@@ -2,12 +2,17 @@ import java.util.*;
 
 class Solution {
     public boolean solution(String[] phone_book) {
-         Set<String> set = new HashSet<>(Arrays.asList(phone_book));
-
+        Arrays.sort(phone_book, (o1,o2) -> Integer.compare(o2.length(), o1.length()));
+        Set<String> list = new HashSet<>();
         for (String number : phone_book) {
-            for (int i = 1; i < number.length(); i++) {
-                if (set.contains(number.substring(0, i))) {
-                    return false; 
+            list.add(number);
+        }
+        
+        for (String number : phone_book) {
+            for (int i=1; i< number.length(); i++) {
+                String target = number.substring(0,i);
+                if (list.contains(target)) {
+                    return false;
                 }
             }
         }
