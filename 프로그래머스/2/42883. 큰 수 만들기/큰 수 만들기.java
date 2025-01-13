@@ -25,12 +25,11 @@ class Solution {
                 }
             }
             // 가장 큰 문자를 String에 넣어주기
-            answerBuilder.append(Character.toString(max));
+            answerBuilder.append(max);
         }
         
         // k개의 수를 제거할 때 얻을 수 있는 가장 큰 숫자를 구하려 한다 
-        answer = answerBuilder.toString();
-        return answer;
+        return answerBuilder.toString();
     }
     
 }
