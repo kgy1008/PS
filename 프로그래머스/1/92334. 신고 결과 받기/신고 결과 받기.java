@@ -2,44 +2,40 @@ import java.util.*;
 
 class Solution {
     public int[] solution(String[] id_list, String[] report, int k) {
-        Map<String, Set<String>> map = new HashMap<>();
-        
+        HashMap<String, Set<String>> map = new HashMap<>();
+        Map<String, Integer> warn = new HashMap<>();
         for (String id : id_list) {
             map.put(id, new HashSet<>());
         }
         
         for (String r : report) {
-            String[] info = r.split(" ");
-            Set<String> tmp = map.get(info[1]);
-            tmp.add(info[0]);
-        }
-        
-        List<String> out = new ArrayList<>();
-        
-        for (String s : map.keySet()) {
-            Set<String> tmp = map.get(s);
-            if (tmp.size() >= k) {
-                out.add(s);
+            String[] tmp = r.split(" ");
+            Set<String> set = map.get(tmp[0]);
+            if (!set.contains(tmp[1])) {
+                set.add(tmp[1]);
+                warn.put(tmp[1], warn.getOrDefault(tmp[1],0) + 1);
             }
         }
         
-        int n = id_list.length;
-        int[] result = new int[n];
+        Set<String> out = new HashSet<>();
+        for (String name : warn.keySet()) {
+            if (warn.get(name) >= k) {
+                out.add(name);
+            }
+        }
         
-        for (int i=0; i<n; i++) {
-            String target = id_list[i];
+        int[] answer = new int[id_list.length];
+        int idx = 0;
+        for (String name : id_list) {
             int cnt = 0;
-            
-            for (String s : out) {
-                Set<String> tmp = map.get(s);
-                if (tmp.contains(target)) {
+            Set<String> tmp = map.get(name);
+            for (String t : tmp) {
+                if (out.contains(t)) {
                     cnt++;
                 }
             }
-            
-            result[i] = cnt;
+            answer[idx++] = cnt;
         }
-        
-        return result;
+        return answer;
     }
 }
