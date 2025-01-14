@@ -1,25 +1,26 @@
+import java.util.*;
+
 class Solution {
     public int[] solution(String[] keyinput, int[] board) {
-        int maxX = (board[0]-1)/2;
-        int maxY = (board[1]-1)/2;
+        HashMap<String, int[]> command = new HashMap<>();
+        command.put("up", new int[]{0,1});
+        command.put("down", new int[]{0,-1});
+        command.put("left", new int[]{-1,0});
+        command.put("right", new int[]{1,0});
         
-        int[] answer = new int[2];
+        int maxRow = board[0] / 2; // 가로
+        int maxCol = board[1] / 2;  // 세로
         
-        for (String cmd : keyinput) {
-            int nx = answer[0];
-            int ny = answer[1];
-            
-            if (cmd.equals("up")) ny = answer[1] + 1; 
-            else if (cmd.equals("down")) ny = answer[1] -1;
-            else if (cmd.equals("left")) nx = answer[0] - 1;
-            else nx = answer[0] + 1;
-            
-            if (Math.abs(nx) > maxX || Math.abs(ny) > maxY) continue;
-            
-            answer[0] = nx;
-            answer[1] = ny;
+        int x = 0, y = 0;
+        for (String key : keyinput) {
+            int[] cmd = command.get(key);
+            if (x + cmd[0] < maxRow * -1 || x + cmd[0] > maxRow || y + cmd[1] < maxCol * -1 || y + cmd[1] > maxCol) {
+                continue;
+            }
+            x += cmd[0];
+            y += cmd[1];
         }
         
-        return answer;
+        return new int[]{x, y};
     }
 }
