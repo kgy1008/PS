@@ -1,32 +1,58 @@
 import java.util.*;
 
 class Solution {
-    
     public int solution(int n, int[][] costs) {
-        int answer = 0;
         int[] parent = new int[n];
-        
-        for (int i = 0; i<n; i++) {
+        for (int i=0; i<n; i++) {
             parent[i] = i;
         }
         
-        Arrays.sort(costs, (o1, o2) -> Integer.compare(o1[2], o2[2]));
+        List<Node> edges = new ArrayList<>();
         
         for (int[] cost : costs) {
-            if (find(cost[0], parent) != find(cost[1], parent)) {
-                union(cost[0], cost[1], parent);
-                answer += cost[2];
+            edges.add(new Node(cost[0], cost[1], cost[2]));
+        }
+        
+        edges.sort((o1, o2) -> Integer.compare(o1.cost, o2.cost));
+        
+        int result = 0;
+        
+        for (Node edge : edges) {
+            if (find(parent, edge.start) != find(parent, edge.end)) {
+                union(parent, edge.start, edge.end);
+                result += edge.cost;
             }
         }
-        return answer;
+        return result;
     }
     
-    private static int find(int x, int[] parent) {
-        if (parent[x] == x) return x;
-        return find(parent[x], parent);
+    static int find(int[] parent, int x) {
+        if (parent[x] == x) {
+            return parent[x];
+        }
+        parent[x] = find(parent, parent[x]);
+        return parent[x];
     }
-
-    private static void union(int x, int y, int[] parent) {
-        parent[find(y, parent)] = find(x, parent);
+    
+    static void union(int[] parent, int a, int b) {
+        a = find(parent, a);
+        b = find(parent, b);
+        if (a < b) {
+            parent[b] = a;
+        } else {
+            parent[a] = b;
+        }
+    }
+    
+    static class Node {
+        int start;
+        int end;
+        int cost;
+        
+        Node(int start, int end, int cost) {
+            this.start = start;
+            this.end = end;
+            this.cost = cost;
+        }
     }
 }
