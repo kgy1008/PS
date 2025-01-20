@@ -2,25 +2,22 @@ import java.util.*;
 
 class Solution {
     int solution(int[][] land) {
-        int n = land.length;
-        int[][] answer = new int[n][4];
-        
+        int[][] dp = new int[land.length][4];
+
         for (int i=0; i<4; i++) {
-            answer[0][i] = land[0][i];
+            dp[0][i] = land[0][i];
         }
         
-        for (int i=1; i<n; i++) {
+        for (int i=1; i<land.length; i++) {
             for (int j=0; j<4; j++) {
-                int max = 0;
                 for (int k=0; k<4; k++) {
-                    if (k != j) {
-                        max = Math.max(max, answer[i-1][k]);
+                    if (j != k) {
+                        dp[i][j] = Math.max(dp[i][j], dp[i-1][k] + land[i][j]);
                     }
                 }
-                answer[i][j] = max + land[i][j];
             }
         }
         
-        return Arrays.stream(answer[n-1]).max().getAsInt();
+        return Arrays.stream(dp[land.length-1]).max().getAsInt();
     }
 }
