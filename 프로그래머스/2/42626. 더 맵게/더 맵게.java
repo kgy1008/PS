@@ -9,22 +9,14 @@ class Solution {
             queue.offer(s);
         }
         
-        while (queue.size() != 1 && checkRepeat(queue, K)) {
+        while (queue.size() > 1 && queue.peek() < K) {
             int first = queue.poll();
             int second = queue.poll();
             int newItem = first + (second * 2);
             queue.offer(newItem);
             answer++;
         }
-        return (checkRepeat(queue, K)) ? -1 : answer;
-    }
-    
-    private boolean checkRepeat(PriorityQueue<Integer> queue, int k) {
-        for (int item : queue) {
-            if (item < k) {
-                return true;
-            }
-        }
-        return false;
+        
+        return (queue.peek() >= K) ? answer : -1;
     }
 }
