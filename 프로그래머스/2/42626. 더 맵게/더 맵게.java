@@ -9,8 +9,11 @@ class Solution {
             queue.offer(s);
         }
         
-        while (queue.size() > 1 && queue.peek() < K) {
+        while (queue.size() > 1) {
             int first = queue.poll();
+            if (first >= K) {
+                break;
+            }
             int second = queue.poll();
             int newItem = first + (second * 2);
             queue.offer(newItem);
