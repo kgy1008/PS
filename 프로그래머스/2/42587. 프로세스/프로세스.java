@@ -2,32 +2,24 @@ import java.util.*;
 
 class Solution {
     public int solution(int[] priorities, int location) {
-        int answer = 0;
-        Deque<int[]> queue = new ArrayDeque<>();
-        for (int i=0; i<priorities.length; i++) {
-            queue.offer(new int[]{i, priorities[i]});
+        PriorityQueue<Integer> pq = new PriorityQueue<>(Collections.reverseOrder()); // 값이 클수록 우선순위가 높음
+        for (int priority : priorities) {
+            pq.add(priority);
         }
-        
-        while (!queue.isEmpty()) {
-            int[] out = queue.poll();
-            if (!isMaxPriority(queue, out[1])) {
-                queue.offer(out);
-            } else {
-                answer++;
-                if (out[0] == location) {
-                    break;
-                }
-            }
+
+        int count = 0;
+        while (!pq.isEmpty()) {
+           for(int i = 0; i < priorities.length; i++) {
+               if(priorities[i] == pq.peek()) {
+                   pq.poll();
+                   count++;
+
+                   if(i == location) {
+                       return count;
+                   }
+               }
+           }
         }
-        return answer;
-    }
-    
-    private static boolean isMaxPriority(Deque<int[]> queue, int out) {
-        for (int[] num : queue) {
-            if (out < num[1]) {
-                return false;
-            }
-        }
-        return true;
+        return count;
     }
 }
