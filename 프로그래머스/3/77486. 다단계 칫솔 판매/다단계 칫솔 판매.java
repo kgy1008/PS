@@ -23,8 +23,7 @@ class Solution {
     }
     
     private static void backtrack(String person, int money) {
-        if (person.equals("-") || money < 10) {
-            profit.put(person, profit.getOrDefault(person, 0) + money);
+        if (person.equals("-") || money == 0) {
             return;
         }
         int minus = (int) Math.floor(money * 0.1);
