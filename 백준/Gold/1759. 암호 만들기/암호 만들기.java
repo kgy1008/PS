@@ -10,6 +10,7 @@ import java.util.StringTokenizer;
 
 public class Main {
     static Set<Character> vowel = new HashSet<>(List.of('a', 'e', 'i', 'o', 'u'));
+    static char[] arr;
     static List<String> list = new ArrayList<>();
 
     public static void main(String[] args) throws IOException {
@@ -19,13 +20,13 @@ public class Main {
         int l = Integer.parseInt(st.nextToken());
         int c = Integer.parseInt(st.nextToken());
 
-        char[] arr = new char[c];
+        arr = new char[c];
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < c; i++) {
             arr[i] = st.nextToken().charAt(0);
         }
         Arrays.sort(arr);
-        combi(arr, 0, 0, l, "");
+        combi(0, l, "");
         for (String word : list) {
             if (isValid(word)) {
                 System.out.println(word);
@@ -52,14 +53,14 @@ public class Main {
         return cnt;
     }
 
-    static void combi(char[] arr, int idx, int level, int l, String s) {
-        if (level == l) {
+    static void combi(int idx, int l, String s) {
+        if (l == 0) {
             list.add(s);
             return;
         }
 
         for (int i = idx; i < arr.length; i++) {
-            combi(arr, i + 1, level + 1, l, s + arr[i]);
+            combi(i + 1, l - 1, s + arr[i]);
         }
     }
 }
