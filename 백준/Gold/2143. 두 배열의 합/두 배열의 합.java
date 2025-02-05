@@ -4,8 +4,8 @@ import java.io.InputStreamReader;
 import java.util.*;
 
 public class Main {
-	static List<Integer> sumA = new ArrayList<>();
-	static List<Integer> sumB = new ArrayList<>();
+	static Map<Integer, Integer> sumA = new HashMap<>();
+	static Map<Integer, Integer> sumB = new HashMap<>();
 
 	public static void main(String[] args) throws IOException{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -29,7 +29,7 @@ public class Main {
 			int sum = 0;
 			for (int j=i; j<n; j++) {
 				sum += A[j];
-				sumA.add(sum);
+				sumA.put(sum, sumA.getOrDefault(sum, 0) + 1);
 			}
 		}
 		
@@ -37,52 +37,19 @@ public class Main {
 			int sum = 0;
 			for (int j=i; j<m; j++) {
 				sum += B[j];
-				sumB.add(sum);
+				sumB.put(sum, sumB.getOrDefault(sum, 0) + 1);
 			}
 		}
 		
-		sumB.sort(null);
-		
 		long answer = 0;
-		for (int num : sumA) {
+		for (int num : sumA.keySet()) {
+			int v1 = sumA.get(num);
 			int target = t - num;
-			int left = lowerBound(target);
-			int right = upperBound(target);
-			answer += (right - left);
-			
+			if (sumB.containsKey(target)) {
+				int v2 = sumB.get(target);
+				answer += ((long) v1*v2);
+			}
 		}
 		System.out.println(answer);
 	}
-	
-	static int lowerBound(int target){
-        int low = 0;
-        int high = sumB.size();
-        int mid;
-
-        while(low < high){
-            mid = (low + high)/2;
-            if(sumB.get(mid) >= target){
-                high = mid;
-            }else{
-                low = mid + 1;
-            }
-        }
-        return high;
-    }
-
-    static int upperBound(int target){
-        int low = 0;
-        int high = sumB.size();
-        int mid;
-
-        while(low < high){
-            mid = (low + high)/2;
-            if(sumB.get(mid) > target){
-                high = mid;
-            }else{
-                low = mid + 1;
-            }
-        }
-        return high;
-    }
 }
