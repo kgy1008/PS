@@ -10,7 +10,7 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int n = Integer.parseInt(br.readLine());
 
-        PriorityQueue<Integer> que = new PriorityQueue<>(Collections.reverseOrder());
+        PriorityQueue<Integer> que = new PriorityQueue<>((o1,o2) -> Integer.compare(o2,o1));
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < n; i++) {
             int num = Integer.parseInt(br.readLine());
