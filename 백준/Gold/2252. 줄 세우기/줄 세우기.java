@@ -7,8 +7,8 @@ import java.util.*;
 
 public class Main {
 	static List<Integer>[] list;
-	static boolean[] visited;
-	static Deque<Integer> answer = new ArrayDeque<>();
+	static int[] degree;
+	static final StringBuilder sb = new StringBuilder();
 	
 	public static void main(String[] args) throws IOException{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -20,7 +20,7 @@ public class Main {
 		int m = Integer.parseInt(st.nextToken());  // 키를 비교한 횟수
 		
 		 list = new ArrayList[n+1];
-		 visited = new boolean[n+1];
+		 degree = new int[n+1];
 		
 		for (int i=1; i<=n; i++) {
 			list[i] = new ArrayList<>();
@@ -31,20 +31,11 @@ public class Main {
 			int a = Integer.parseInt(st.nextToken());
 			int b = Integer.parseInt(st.nextToken());
 			list[a].add(b);
+			degree[b]++;
 		}
 		
-		for (int i=1; i<=n; i++) {
-			if (!visited[i]) {
-				dfs(i);
-			}
-		}
-		
-		StringBuilder sb = new StringBuilder();
-		
-		while(!answer.isEmpty()) {
-			sb.append(answer.pop()).append(" ");
-		}
-		
+		solve(n);
+
 		bw.write(sb.toString());
 		bw.flush();
 		
@@ -52,15 +43,26 @@ public class Main {
 		bw.close();
 	}
 	
-	static void dfs(int n) {
-		visited[n] = true;
-
-		for (int next : list[n]) {
-			if (!visited[next]) {
-				dfs(next);
+	static void solve(int n) {
+		Deque<Integer> queue = new ArrayDeque<>();
+		
+		for (int i=1; i<=n; i++) {
+			if (degree[i] == 0) {
+				queue.offer(i);
 			}
 		}
 		
-		answer.push(n);
+		while (!queue.isEmpty()) {
+			int cur = queue.poll();
+			sb.append(cur).append(" ");
+			
+			for (int next : list[cur]) {
+				degree[next]--;
+				
+				if (degree[next] == 0) {
+					queue.offer(next);
+				}
+			}
+		}
 	}
 }
