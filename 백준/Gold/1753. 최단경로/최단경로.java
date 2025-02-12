@@ -1,74 +1,91 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
+import java.util.List;
 import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 public class Main {
+    static final int INF = Integer.MAX_VALUE;
+    static List<Node>[] adjList;
+    static boolean[] visited;
+    static int[] dist;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
         StringTokenizer st;
 
         st = new StringTokenizer(br.readLine());
-        int n = Integer.parseInt(st.nextToken());
-        ArrayList<Node>[] adj = new ArrayList[n + 1];
-        for (int i = 1; i <= n; i++) {
-            adj[i] = new ArrayList<>();
-        }
+        int v = Integer.parseInt(st.nextToken());
         int e = Integer.parseInt(st.nextToken());
 
-        int[] cost = new int[n + 1];
-        Arrays.fill(cost, Integer.MAX_VALUE);
+        adjList = new ArrayList[v + 1];
+        for (int i = 1; i <= v; i++) {
+            adjList[i] = new ArrayList<>();
+        }
+        visited = new boolean[v + 1];
+        dist = new int[v + 1];
+        Arrays.fill(dist, INF);
 
         int k = Integer.parseInt(br.readLine());
-        cost[k] = 0;
+        dist[k] = 0;
 
         while (e-- > 0) {
             st = new StringTokenizer(br.readLine());
-            int u = Integer.parseInt(st.nextToken());
-            int v = Integer.parseInt(st.nextToken());
-            int w = Integer.parseInt(st.nextToken());
+            int a = Integer.parseInt(st.nextToken());
+            int b = Integer.parseInt(st.nextToken());
+            int c = Integer.parseInt(st.nextToken());
 
-            adj[u].add(new Node(v, w));
+            adjList[a].add(new Node(b, c));
         }
 
-        PriorityQueue<Node> pq = new PriorityQueue<>(Comparator.comparingInt(o -> o.cost));
-        pq.add(new Node(k, 0));
+        PriorityQueue<Node> pq = new PriorityQueue<>((o1, o2) -> Integer.compare(o1.cost, o2.cost));
+        pq.offer(new Node(k, 0));
 
         while (!pq.isEmpty()) {
             Node cur = pq.poll();
 
-            if (cost[cur.dest] < cur.cost) {
+            if (visited[cur.num]) {
                 continue;
             }
 
-            for (Node node : adj[cur.dest]) {
-                if (cost[node.dest] > node.cost + cur.cost) {
-                    cost[node.dest] = node.cost + cur.cost;
-                    pq.add(new Node(node.dest, cost[node.dest]));
+            visited[cur.num] = true;
+
+            for (Node next : adjList[cur.num]) {
+                if (cur.cost + next.cost < dist[next.num]) {
+                    dist[next.num] = cur.cost + next.cost;
+                    pq.offer(new Node(next.num, dist[next.num]));
                 }
             }
         }
 
-        for (int i = 1; i <= n; i++) {
-            if (cost[i] == Integer.MAX_VALUE) {
-                System.out.println("INF");
+        StringBuilder sb = new StringBuilder();
+        for (int i = 1; i <= v; i++) {
+            if (dist[i] == INF) {
+                sb.append("INF\n");
             } else {
-                System.out.println(cost[i]);
+                sb.append(dist[i]).append("\n");
             }
         }
+
+        bw.write(sb.toString());
+        bw.flush();
+
+        br.close();
+        bw.close();
     }
 
-    private static class Node {
-        int dest;
+    static class Node {
+        int num;
         int cost;
 
-        public Node(final int dest, final int cost) {
-            this.dest = dest;
+        public Node(final int num, final int cost) {
+            this.num = num;
             this.cost = cost;
         }
     }
