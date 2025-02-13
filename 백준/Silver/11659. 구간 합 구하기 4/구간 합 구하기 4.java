@@ -1,30 +1,37 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st;
+	static int[] prefixSum;
 
-        st = new StringTokenizer(br.readLine());
-        int n = Integer.parseInt(st.nextToken());
-        int m = Integer.parseInt(st.nextToken());
-        int[] num = new int[n+1];
+	public static void main(String[] args) throws IOException{
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+		StringTokenizer st;
+		
+		st = new StringTokenizer(br.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		int m = Integer.parseInt(st.nextToken());
+		prefixSum = new int[n + 1];
+		
+		st = new StringTokenizer(br.readLine());
+		for (int i=1; i<=n; i++) {
+			int num = Integer.parseInt(st.nextToken());
+			prefixSum[i] = prefixSum[i-1] + num;
+		}
+		
+		StringBuilder sb = new StringBuilder();
+		while (m --> 0) {
+			st = new StringTokenizer(br.readLine());
+			int start = Integer.parseInt(st.nextToken());
+			int end = Integer.parseInt(st.nextToken());
+			
+			sb.append(prefixSum[end] - prefixSum[start - 1]).append("\n");
+		}
+		
+		bw.write(sb.toString());
+		bw.flush();
 
-        st = new StringTokenizer(br.readLine());
-        for (int i = 1; i < n + 1; i++) {
-            int number = Integer.parseInt(st.nextToken());
-            num[i] = num[i-1] + number;
-        }
+	}
 
-        while (m --> 0) {
-            st = new StringTokenizer(br.readLine());
-            int start = Integer.parseInt(st.nextToken());
-            int end = Integer.parseInt(st.nextToken());
-            int sum = num[end] - num[start-1];
-            System.out.println(sum);
-        }
-    }
 }
