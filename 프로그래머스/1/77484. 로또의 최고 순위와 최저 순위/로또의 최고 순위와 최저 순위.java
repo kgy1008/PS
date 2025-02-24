@@ -1,30 +1,36 @@
 import java.util.*;
 
 class Solution {
-    public int[] solution(int[] lottos, int[] win_nums) {        
-        Set<Integer> win = new HashSet<>();
+    public int[] solution(int[] lottos, int[] win_nums) {
+        HashMap<Integer, Integer> winning = new HashMap<>();
+        winning.put(6,1);
+        winning.put(5,2);
+        winning.put(4,3);
+        winning.put(3,4);
+        winning.put(2,5);
+        winning.put(1,6);
+        winning.put(0,6);
         
-        for (int w : win_nums) {
-            win.add(w);
+        
+        int unknown = 0;
+        for (int lotto : lottos) {
+            if (lotto == 0) {
+                unknown++;
+            }
         }
         
-        
-        int zero = 0;
-        int correct = 0;
-        for (int i : lottos) {
-            if (i == 0) zero++;
-            if (win.contains(i)) correct++;
+        int match = 0;
+        for (int lotto : lottos) {
+            for (int win : win_nums) {
+                if (lotto == win) {
+                    match++;
+                }
+            }
         }
         
-        return new int[] {award(correct+zero), award(correct)};
-    }
-    
-    private int award(int correct) {
-        if (correct == 6) return 1;
-        else if (correct == 5) return 2;
-        else if (correct == 4) return 3;
-        else if (correct == 3) return 4;
-        else if (correct == 2) return 5;
-        else return 6;
+        int max = winning.get(match + unknown);
+        int min = winning.get(match);
+        
+        return new int[]{max, min};
     }
 }
