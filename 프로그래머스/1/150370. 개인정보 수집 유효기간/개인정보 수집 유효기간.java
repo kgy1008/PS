@@ -2,13 +2,12 @@ import java.util.*;
 
 class Solution {
     public int[] solution(String today, String[] terms, String[] privacies) {
-        // 오늘 날짜 파싱
-        StringTokenizer st = new StringTokenizer(today, ".");
+        StringTokenizer st;
+        st = new StringTokenizer(today, ".");
         int year = Integer.parseInt(st.nextToken());
         int month = Integer.parseInt(st.nextToken());
         int day = Integer.parseInt(st.nextToken());
         
-        // 약관 종류와 유효 기간 매핑
         HashMap<String, Integer> map = new HashMap<>();
         for (String term : terms) {
             String[] t = term.split(" ");
@@ -17,22 +16,34 @@ class Solution {
         }
         
         List<Integer> answer = new ArrayList<>();
-
-        for (int i = 0; i < privacies.length; i++) {
+        
+        for (int i=0; i<privacies.length; i++) {
             String[] info = privacies[i].split(" ");
-            int due = map.get(info[1]);  // 유효기간
+            int due = map.get(info[1]);
             st = new StringTokenizer(info[0], ".");
             int y = Integer.parseInt(st.nextToken());
-            int m = Integer.parseInt(st.nextToken()) + due;  // 유효기간을 더한 후
+            int m = Integer.parseInt(st.nextToken()) + due;
             int d = Integer.parseInt(st.nextToken());
-
+  
             while (m > 12) {
-                m -= 12;
                 y++;
+                m -= 12;
             }
-
-            if (year > y || (year == y && month > m) || (year == y && month == m && day >= d)) {
-                answer.add(i + 1);  
+            
+            if (year >= y) {
+                if (year > y) {
+                    answer.add(i+1);
+                } else {
+                    if (month >= m) {
+                        if (month > m) {
+                            answer.add(i+1);
+                        } else {
+                            if (day >= d) {
+                                answer.add(i+1);
+                            }
+                        }
+                    }
+                }
             }
         }
         
