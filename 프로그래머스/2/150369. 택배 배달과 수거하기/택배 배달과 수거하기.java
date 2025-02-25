@@ -23,6 +23,7 @@ class Solution {
                 give -= deliveries[end1];
                 if (give < 0) {
                     deliveries[end1] = give * -1;
+                    break;
                 } else {
                     end1--;
                 }
@@ -34,6 +35,7 @@ class Solution {
                 get -= pickups[end2];
                 if (get < 0) {
                     pickups[end2] = get * -1;
+                    break;
                 } else {
                     end2--;
                 }
