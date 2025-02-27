@@ -1,41 +1,55 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
 public class Main {
-    static List<Integer> number = new ArrayList<>();
-    static List<String> answer = new ArrayList<>();
+
+    static List<List<Integer>> list = new ArrayList<>();
+    static int[] nums;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
         StringTokenizer st = new StringTokenizer(br.readLine());
+
         int n = Integer.parseInt(st.nextToken());
         int m = Integer.parseInt(st.nextToken());
 
-        for (int i = 1; i <= n; i++) {
-            number.add(i);
+        nums = new int[n];
+        for (int i = 0; i < n; i++) {
+            nums[i] = i + 1;
         }
-        number.sort(null);
 
-        combination(0, m, "");
+        combination(m, 0, new ArrayList<>());
 
-        for (String s : answer) {
-            System.out.println(s);
+        StringBuilder sb = new StringBuilder();
+        for (List<Integer> numbers : list) {
+
+            for (int num : numbers) {
+                sb.append(num).append(" ");
+            }
+            sb.append("\n");
         }
+
+        bw.write(sb.toString());
+        bw.flush();
     }
 
-    private static void combination(int idx, int m, String s) {
+    static void combination(int m, int idx, List<Integer> number) {
         if (m == 0) {
-            answer.add(s);
+            list.add(new ArrayList<>(number));
             return;
         }
 
-        for (int i = idx; i < number.size(); i++) {
-            int n = number.get(i);
-            combination(i, m - 1, s + n + " ");
+        for (int i = idx; i < nums.length; i++) {
+            number.add(nums[i]);
+            combination(m - 1, i, number);
+            number.remove(number.size() - 1);
         }
     }
 }
