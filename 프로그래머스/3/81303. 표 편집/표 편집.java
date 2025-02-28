@@ -1,41 +1,40 @@
 import java.util.*;
 
 class Solution {
+    static int pointer;
+    
     public String solution(int n, int k, String[] cmd) {
-        TreeSet<Integer> active = new TreeSet<>();
-        ArrayDeque<Integer> removed = new ArrayDeque<>();
+        TreeSet<Integer> set = new TreeSet<>();
+        Stack<Integer> deleted = new Stack<>();
+        pointer = k;
 
         for (int i = 0; i < n; i++) {
-            active.add(i);
+            set.add(i);
         }
 
-        int idx = k;
+        for (String commands : cmd) {
+            if (commands.equals("C")) { // 삭제
+                deleted.push(pointer); 
+                set.remove(pointer);
 
-        for (String command : cmd) {
-            if (command.equals("C")) {
-                removed.push(idx); 
-                active.remove(idx); 
-
-                if (active.higher(idx) != null) {
-                    idx = active.higher(idx);
+                if (set.higher(pointer) != null) { 
+                    pointer = set.higher(pointer); 
                 } else {
-                    idx = active.lower(idx);
+                    pointer = set.lower(pointer); 
                 }
-            } else if (command.equals("Z")) {
-                int restored = removed.pop(); 
-                active.add(restored);
+            } else if (commands.equals("Z")) { // 복구
+                set.add(deleted.pop());
             } else {
-                String[] parts = command.split(" ");
-                String direction = parts[0];
-                int number = Integer.parseInt(parts[1]);
-
-                if (direction.equals("U")) {
-                    for (int i = 0; i < number; i++) {
-                        idx = active.lower(idx);
+                String[] command = commands.split(" ");
+                int dist = Integer.parseInt(command[1]);
+                
+                if (command[0].equals("D")) { // 아래로 이동
+                    while (dist-- > 0) {
+                        pointer = set.higher(pointer);
                     }
-                } else if (direction.equals("D")) {
-                    for (int i = 0; i < number; i++) {
-                        idx = active.higher(idx);
+                } else { // 위로 이동
+                    while (dist-- > 0) {
+                        pointer = set.lower(pointer);
                     }
                 }
             }
@@ -43,7 +42,7 @@ class Solution {
 
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < n; i++) {
-            if (active.contains(i)) {
+            if (set.contains(i)) {
                 sb.append("O");
             } else {
                 sb.append("X");
