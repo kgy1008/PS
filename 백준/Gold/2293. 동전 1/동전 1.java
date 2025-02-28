@@ -17,22 +17,17 @@ public class Main {
             coins[i] = Integer.parseInt(br.readLine());
         }
 
-        int[][] dp = new int[n + 1][k + 1];
-        for (int i = 0; i <= n; i++) {
-            dp[i][0] = 1;
-        }
+        int[] dp = new int[k + 1];
+        dp[0] = 1;
 
-        for (int i = 1; i <= n; i++) {
-            int coin = coins[i - 1];
+        for (int i = 0; i < n; i++) {
             for (int j = 1; j <= k; j++) {
-                if (j - coin >= 0) {
-                    dp[i][j] = dp[i - 1][j] + dp[i][j - coin];
-                } else {
-                    dp[i][j] = dp[i - 1][j];
+                if (j >= coins[i]) {
+                    dp[j] += dp[j - coins[i]];
                 }
             }
         }
 
-        System.out.println(dp[n][k]);
+        System.out.println(dp[k]);
     }
 }
