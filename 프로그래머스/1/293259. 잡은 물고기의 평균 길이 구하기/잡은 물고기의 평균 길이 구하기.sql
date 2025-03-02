@@ -1,4 +1,3 @@
 -- 코드를 작성해주세요
-SELECT ROUND(AVG(IFNULL(LENGTH, 10)), 2) AS AVERAGE_LENGTH
-FROM FISH_INFO
-
+select round(avg(ifnull(length,10)), 2)as AVERAGE_LENGTH
+from FISH_INFO
