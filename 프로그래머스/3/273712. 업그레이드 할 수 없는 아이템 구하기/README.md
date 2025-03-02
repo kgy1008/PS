@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2025년 01월 12일 14:56:08
+2025년 03월 02일 17:48:13
 
 ### 문제 설명
 
@@ -40,13 +40,28 @@ ROOT 아이템은 'ITEM_A'가 됩니다.</p>
 <th>Nullable</th>
 </tr>
 </thead>
-        <tbody></tbody>
+        <tbody><tr>
+<td>ITEM_ID</td>
+<td>INTEGER</td>
+<td>FALSE</td>
+</tr>
+<tr>
+<td>ITEM_NAME</td>
+<td>VARCHAR(N)</td>
+<td>FALSE</td>
+</tr>
+<tr>
+<td>RARITY</td>
+<td>INTEGER</td>
+<td>FALSE</td>
+</tr>
+<tr>
+<td>PRICE</td>
+<td>INTEGER</td>
+<td>FALSE</td>
+</tr>
+</tbody>
       </table>
-<p>| ITEM<u>ID | INTEGER | FALSE |<br>
-| ITEM</u>NAME | VARCHAR(N) | FALSE |<br>
-| RARITY | INTEGER | FALSE |<br>
-| PRICE | INTEGER | FALSE |</p>
-
 <p><code>ITEM_TREE</code> 테이블은 다음과 같으며, <code>ITEM_ID</code>, <code>PARENT_ITEM_ID</code>는 각각 아이템 ID, PARENT 아이템의 ID를 나타냅니다.</p>
 <table class="table">
         <thead><tr>

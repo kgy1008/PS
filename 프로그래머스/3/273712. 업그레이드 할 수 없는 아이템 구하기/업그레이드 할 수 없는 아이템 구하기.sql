@@ -1,8 +1,5 @@
 -- 코드를 작성해주세요
-SELECT I.ITEM_ID, ITEM_NAME, RARITY
-FROM ITEM_INFO I
-WHERE I.ITEM_ID NOT IN (
-        SELECT PARENT_ITEM_ID
-        FROM ITEM_TREE
-        WHERE PARENT_ITEM_ID IS NOT NULL)
-ORDER BY I.ITEM_ID DESC
+select I.item_id, I.item_name, I.rarity
+from ITEM_INFO I
+where I.item_id not in (select PARENT_ITEM_ID from ITEM_TREE where PARENT_ITEM_ID is not null)
+order by item_id desc
