@@ -3,34 +3,39 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class Main {
-	static int[] dp = new int[1001];
 
-	public static void main(String[] args) throws IOException{
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		dp[1]= 3;
-		init();
-		
-		int c = Integer.parseInt(br.readLine());
-		while (c --> 0) {
-			int n = Integer.parseInt(br.readLine());
-			System.out.println(dp[n]);
-		}
-	}
-	
-	static void init() {
-		for (int i=2; i<1001; i++) {
-			int answer = 0;
-			for (int j=1; j<i; j++) {
-				if (gcd(i, j) == 1) {
-					answer++;
-				}
-			}
-			dp[i] = dp[i-1] + answer * 2;
-		}
-	}
-	
-	static int gcd(int i, int j) {
-		if (j == 0) return i;
-		return gcd(j, i%j);
-	}
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        int c = Integer.parseInt(br.readLine());
+
+        int[] dp = new int[1001];
+        dp[1] = 3;
+        dp[2] = 5;
+        for (int i = 3; i <= 1000; i++) {
+            dp[i] = dp[i - 1] + 2 * (count(i));
+        }
+
+        while (c-- > 0) {
+            int n = Integer.parseInt(br.readLine());
+            System.out.println(dp[n]);
+        }
+    }
+
+    private static int count(final int n) {
+        int count = 0;
+        for (int i = 1; i < n; i++) {
+            if (gcd(n, i) == 1) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    private static int gcd(int i, int j) {
+        if (j == 0) {
+            return i;
+        }
+        return gcd(j, i % j);
+    }
 }
