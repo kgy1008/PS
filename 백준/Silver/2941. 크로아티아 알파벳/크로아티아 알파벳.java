@@ -5,37 +5,15 @@ import java.io.InputStreamReader;
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
+        String[] croatias = {"c=", "c-", "dz=", "d-", "lj", "nj", "s=", "z="};
         String text = br.readLine();
-        int len = text.length();
-        int count = 0;
 
-        for (int i = 0; i < len; i++) {
-            char ch = text.charAt(i);
-            if (ch == 'c' && i < len - 1) {
-                if (text.charAt(i + 1) == '=' || text.charAt(i + 1) == '-') {
-                    i++;
-                }
-
-            } else if (ch == 'd' && i < len - 1) {
-                if (text.charAt(i + 1) == '-') {    // d- 일 경우
-                    i++;
-                } else if (i < len - 2 && text.charAt(i + 1) == 'z') {
-                    if (text.charAt(i + 2) == '=') {    // dz= 일 경우
-                        i += 2;
-                    }
-                }
-            } else if ((ch == 'l' || ch == 'n') && i < len - 1) {
-                if (text.charAt(i + 1) == 'j') {    // lj 또는 nj 일 경우
-                    i++;
-                }
-            } else if ((ch == 's' || ch == 'z') && i < len - 1) {
-                if (text.charAt(i + 1) == '=') {    // s= 또는z= 일 경우
-                    i++;
-                }
+        for (int i = 0; i < croatias.length; i++) {
+            if (text.contains(croatias[i])) {
+                text = text.replace(croatias[i], "!");
             }
-            count++;
         }
-        System.out.println(count);
+        System.out.println(text.length());
+        br.close();
     }
 }
