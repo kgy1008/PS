@@ -1,9 +1,13 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
-import java.util.stream.Stream;
+import java.util.Set;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -12,21 +16,24 @@ public class Main {
         int n = Integer.parseInt(br.readLine());
 
         HashMap<String, Integer> map = new HashMap<>();
+        int max = 0;
         for (int i = 0; i < n; i++) {
             String s = br.readLine();
             map.put(s, map.getOrDefault(s, 0) + 1);
+            max = Math.max(max, map.get(s));
         }
 
-        Stream<Entry<String, Integer>> entry = map.entrySet().stream().sorted((o1, o2) -> {
-            int result = Integer.compare(o2.getValue(), o1.getValue()); // 값을 기준으로 내림차순 정렬
-            if (result == 0) {
-                String key1 = o1.getKey();
-                String key2 = o2.getKey();
-                return key1.compareTo(key2); // 사전 순 정렬
-            }
-            return result;
-        });
+        Set<Map.Entry<String, Integer>> entrySet = map.entrySet();
+        List<String> candidate = new ArrayList<>();
+        for (Entry<String, Integer> entry : entrySet) {
+            int value = entry.getValue();
 
-        System.out.println(entry.findFirst().get().getKey());
+            if (value == max) {
+                candidate.add(entry.getKey());
+            }
+        }
+
+        Collections.sort(candidate);
+        System.out.println(candidate.get(0));
     }
 }
