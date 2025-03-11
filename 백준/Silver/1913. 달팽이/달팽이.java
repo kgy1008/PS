@@ -3,54 +3,69 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class Main {
+    static int[][] board;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int n = Integer.parseInt(br.readLine());
-        int target = Integer.parseInt(br.readLine());
+        int N = Integer.parseInt(br.readLine());
+        board = new int[N][N];
+        fill(N);
 
-        int[][] map = new int[n][n];
-        int value = n * n;
-        int x = 0, y = 0;
-        int time = 0;
-        int limit = n;
-        while (value > 0) {
-            x = time;
-            for (int i = y; i < limit; i++) {
-                map[i][x] = value--;
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                System.out.print(board[i][j] + " ");
             }
-
-            y = limit - 1;
-            for (int i = x + 1; i < limit; i++) {
-                map[y][i] = value--;
-            }
-
-            x = limit - 1;
-            for (int i = y - 1; i >= time; i--) {
-                map[i][x] = value--;
-            }
-
-            y = time;
-            for (int i = x - 1; i > time; i--) {
-                map[y][i] = value--;
-            }
-            time++;
-            limit--;
-            y = time;
+            System.out.println();
         }
 
-        int answerX = 0, answerY = 0;
+        int M = Integer.parseInt(br.readLine());
+        int[] answer = find(M, N);
+        System.out.println(answer[0] + " " + answer[1]);
+    }
+
+    private static void fill(int n) {
+        int x = 0, y = 0;
+        int width = n;
+        int num = n * n;
+
+        while (num > 1) {
+            for (int i = x; i < x + width - 1; i++) {
+                board[i][y] = num--;
+            }
+            x += width - 1;
+
+            for (int i = y; i < y + width - 1; i++) {
+                board[x][i] = num--;
+            }
+            y += width - 1;
+
+            for (int i = x; i > x - width + 1; i--) {
+                board[i][y] = num--;
+            }
+            x -= width - 1;
+
+            for (int i = y; i > y - width + 1; i--) {
+                board[x][i] = num--;
+            }
+            y -= width - 1;
+
+            width -= 2;
+            x++;
+            y++;
+        }
+
+        int mid = n / 2;
+        board[mid][mid] = num; // 1 채우기
+    }
+
+    private static int[] find(int m, int n) {
         for (int i = 0; i < n; i++) {
-            StringBuilder sb = new StringBuilder();
             for (int j = 0; j < n; j++) {
-                sb.append(map[i][j]).append(" ");
-                if (map[i][j] == target) {
-                    answerX = i + 1;
-                    answerY = j + 1;
+                if (board[i][j] == m) {
+                    return new int[]{i + 1, j + 1};
                 }
             }
-            System.out.println(sb.toString());
         }
-        System.out.printf("%d %d", answerX, answerY);
+        return new int[]{-1, -1};
     }
 }
