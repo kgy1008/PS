@@ -1,11 +1,9 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashMap;
 import java.util.StringTokenizer;
 
 public class Main {
-    static HashMap<Integer, Character> map = new HashMap<>();
     static int[] nums;
     static int[] cal;
     static int max = Integer.MIN_VALUE;
@@ -22,62 +20,37 @@ public class Main {
         }
 
         cal = new int[4]; // +, -, *, /
-        map.put(0, '+');
-        map.put(1, '-');
-        map.put(2, '*');
-        map.put(3, '/');
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < 4; i++) {
             cal[i] = Integer.parseInt(st.nextToken());  // 연산자의 개수
         }
 
-        combi(n, 0, "");
+        combi(n - 1, nums[0], 1);
         System.out.println(max);
         System.out.println(min);
     }
 
-    private static void combi(int n, int idx, String s) {
-        if (n == 1) {
-            calculate(s + nums[idx]);
+    private static void combi(int n, int sum, int idx) {
+        if (n == 0) {
+            min = Math.min(sum, min);
+            max = Math.max(sum, max);
+            return;
         }
 
         for (int i = 0; i < 4; i++) {
             if (cal[i] > 0) {
                 cal[i]--;
-                combi(n - 1, idx + 1, s + nums[idx] + map.get(i));
+                if (i == 0) { // 덧셈
+                    combi(n - 1, sum + nums[idx], idx + 1);
+                } else if (i == 1) { // 뺄셈
+                    combi(n - 1, sum - nums[idx], idx + 1);
+                } else if (i == 2) { // 곱셈
+                    combi(n - 1, sum * nums[idx], idx + 1);
+                } else { // 나눗셈
+                    combi(n - 1, sum / nums[idx], idx + 1);
+                }
                 cal[i]++;
             }
         }
-    }
-
-    private static void calculate(String s) {
-        StringTokenizer st = new StringTokenizer(s, "+-*/", true);
-        int num1 = Integer.parseInt(st.nextToken());
-        char cal = st.nextToken().charAt(0);
-        int num2 = Integer.parseInt(st.nextToken());
-        int sum = parse(num1, num2, cal);
-
-        while (st.hasMoreTokens()) {
-            char c = st.nextToken().charAt(0);
-            int num = Integer.parseInt(st.nextToken());
-            sum = parse(sum, num, c);
-        }
-
-        min = Math.min(sum, min);
-        max = Math.max(sum, max);
-    }
-
-    private static int parse(int num1, int num2, char cal) {
-        if (cal == '+') {
-            return num1 + num2;
-        }
-        if (cal == '-') {
-            return num1 - num2;
-        }
-        if (cal == '*') {
-            return num1 * num2;
-        }
-
-        return num1 / num2;
     }
 }
