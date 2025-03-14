@@ -2,35 +2,39 @@ import java.util.*;
 
 class Solution {
     public int[] solution(String[] gems) {
-        Set<String> set = new HashSet<>(Arrays.asList(gems));
-        int total = set.size(); // 전체 보석 종류 수
+        int[] answer = new int[]{1, gems.length};
         
-        int start = 0, end = 0;
-        int min = gems.length - 1; 
-        int left = 1, right = gems.length;
+        Set<String> set = new HashSet<>();
+        for (String gem : gems) {
+            set.add(gem);
+        }
+        
+        int total = set.size();
+        int len = gems.length;
         
         HashMap<String, Integer> map = new HashMap<>();
-        
-        while (end < gems.length) {
-            map.put(gems[end], map.getOrDefault(gems[end], 0) + 1);
-            end++;
+        int right = 0;
+        for (int left=0; left<gems.length; left++) {
+            while (right < gems.length && map.size() != total) {
+                String gem = gems[right];
+                map.put(gem, map.getOrDefault(gem, 0) + 1);
+                right++;
+            }
             
-            while (map.size() == total) { // 모든 보석이 포함될 때
-                if (end - start < min) {
-                    min = end - start;
-                    left = start + 1;
-                    right = end;
-                }
-                
-                // 시작점 보석을 하나 제거
-                map.put(gems[start], map.get(gems[start]) - 1);
-                if (map.get(gems[start]) == 0) {
-                    map.remove(gems[start]);
-                }
-                start++;
+            right = Math.min(right, gems.length);
+            if (map.size() == total && len > right - left) {
+                len = right - left;
+                answer[0] = left+1;
+                answer[1] = right;
+            }
+            
+            String remove = gems[left];
+            map.put(remove, map.get(remove) - 1);
+            if (map.get(remove) == 0) {
+                map.remove(remove);
             }
         }
         
-        return new int[]{left, right};
+        return answer;
     }
 }
