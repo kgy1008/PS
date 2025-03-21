@@ -9,29 +9,26 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st;
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
-        int n = Integer.parseInt(br.readLine());
-
-        st = new StringTokenizer(br.readLine());
+        int n = Integer.parseInt(st.nextToken());
         int[] nums = new int[n];
+        st = new StringTokenizer(br.readLine());
         for (int i = 0; i < n; i++) {
             nums[i] = Integer.parseInt(st.nextToken());
         }
 
-        int start = 0;
+        Set<Integer> set = new HashSet<>();
+
         int end = 0;
         long answer = 0L;
-
-        Set<Integer> set = new HashSet<>();
-        while (start < n) {
+        for (int start = 0; start < n; start++) {
             while (end < n && !set.contains(nums[end])) {
                 set.add(nums[end++]);
             }
             answer += (end - start);
-            set.remove(nums[start++]);
+            set.remove(nums[start]);
         }
-
         System.out.println(answer);
     }
 }
