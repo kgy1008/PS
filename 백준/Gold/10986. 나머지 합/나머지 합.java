@@ -15,18 +15,18 @@ public class Main {
 
         st = new StringTokenizer(br.readLine());
 
-        long result = 0;
-        Map<Integer, Long> remainderCount = new HashMap<>();
-        remainderCount.put(0, 1L);  
-        
+        long result = 0L;
+        Map<Integer, Integer> remainderCount = new HashMap<>();
+        remainderCount.put(0, 1);
+
         int prefixMod = 0;
         for (int i = 0; i < n; i++) {
             int num = Integer.parseInt(st.nextToken());
             prefixMod = (prefixMod + (num % m)) % m;
-            
-            result += remainderCount.getOrDefault(prefixMod, 0L);
 
-            remainderCount.put(prefixMod, remainderCount.getOrDefault(prefixMod, 0L) + 1);
+            result += remainderCount.getOrDefault(prefixMod, 0);
+
+            remainderCount.put(prefixMod, remainderCount.getOrDefault(prefixMod, 0) + 1);
         }
 
         System.out.println(result);
