@@ -1,20 +1,31 @@
-import java.util.Stack;
+import java.util.*;
 
 class Solution {
     public String solution(String number, int k) {
-        char[] result = new char[number.length() - k];
-        Stack<Character> stack = new Stack<>();
-
+        Deque<Integer> stack = new ArrayDeque<>();
+        
         for (int i=0; i<number.length(); i++) {
-            char c = number.charAt(i);
-            while (!stack.isEmpty() && stack.peek() < c && k-- > 0) {
-                stack.pop();
+            int c = number.charAt(i) - '0';
+            while (!stack.isEmpty() && stack.peek() < c) {
+                if (k > 0) {
+                    stack.pop();
+                    k--;
+                } else {
+                    break;
+                }
             }
             stack.push(c);
         }
-        for (int i=0; i<result.length; i++) {
-            result[i] = stack.get(i);
+        
+        while (k > 0 && !stack.isEmpty()) {
+            stack.pop();
+            k--;
         }
-        return new String(result);
+        
+        StringBuilder sb = new StringBuilder();
+        while (!stack.isEmpty()) {
+            sb.append(stack.pollLast());
+        }
+        return sb.toString();
     }
 }
