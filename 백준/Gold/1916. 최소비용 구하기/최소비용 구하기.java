@@ -42,6 +42,7 @@ public class Main {
 
     private static int solve(int start, int end) {
         int[] distance = new int[adjList.length];
+        boolean[] visited = new boolean[adjList.length];
         Arrays.fill(distance, INF);
         distance[start] = 0;
 
@@ -50,15 +51,17 @@ public class Main {
 
         while (!queue.isEmpty()) {
             Node node = queue.poll();
+            int current = node.dest;
 
-            if (distance[node.dist] < node.cost) {
+            if (visited[current]) {
                 continue;
             }
+            visited[current] = true;
 
-            for (Node next : adjList[node.dist]) {
-                if (distance[next.dist] > node.cost + next.cost) {
-                    distance[next.dist] = node.cost + next.cost;
-                    queue.offer(new Node(next.dist, distance[next.dist]));
+            for (Node next : adjList[current]) {
+                if (!visited[next.dest] && distance[next.dest] > distance[current] + next.cost) {
+                    distance[next.dest] = distance[current] + next.cost;
+                    queue.offer(new Node(next.dest, distance[next.dest]));
                 }
             }
         }
@@ -66,12 +69,13 @@ public class Main {
         return distance[end];
     }
 
+
     private static class Node {
-        int dist;
+        int dest;
         int cost;
 
-        public Node(final int dist, final int cost) {
-            this.dist = dist;
+        public Node(final int dest, final int cost) {
+            this.dest = dest;
             this.cost = cost;
         }
     }
