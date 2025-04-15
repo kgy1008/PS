@@ -6,10 +6,10 @@ class Solution {
 
         for (int j = 0; j < s.length; j++) {
             Deque<Character> stack = new ArrayDeque<>();
-            int cnt = 0; // 110의 개수
             StringBuilder sb = new StringBuilder();
             String str = s[j];
 
+            int cnt = 0; 
             for (int i = 0; i < str.length(); i++) {
                 char z = str.charAt(i);
                 if (stack.size() >= 2) {
@@ -39,8 +39,8 @@ class Solution {
             while (!stack.isEmpty()) {
                 sb.append(stack.pop());
             }
-            String temp = sb.reverse().toString();
-            answer[j] = temp;
+            
+            answer[j] = sb.reverse().toString();
         }
 
         return answer;
