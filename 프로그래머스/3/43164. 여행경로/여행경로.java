@@ -1,34 +1,30 @@
 import java.util.*;
 
 class Solution {
-    static List<String> answer = new ArrayList<>();
-    static Map<String, PriorityQueue<String>> map = new HashMap<>();
-    
+    List<String> answer = new ArrayList<>();
+    boolean[] visited;
+
     public String[] solution(String[][] tickets) {
-        // 초기화
-        for (String[] ticket : tickets) {
-            map.putIfAbsent(ticket[0], new PriorityQueue<>());
-            map.putIfAbsent(ticket[1], new PriorityQueue<>());
-        }
-        
-        // 설정
-        for (String[] ticket : tickets) {
-            map.get(ticket[0]).offer(ticket[1]);
-        }
-        
-        dfs("ICN");
-        return answer.toArray(new String[0]);
+        Arrays.sort(tickets, (a, b) -> a[1].compareTo(b[1])); // 오름차순 정렬
+
+        visited = new boolean[tickets.length];
+        dfs("ICN", "ICN", tickets, 0);
+
+        return answer.get(0).split(" ");
     }
-    
-    private static void dfs(String start) {
-        PriorityQueue<String> queue = map.get(start);
-        
-        // 더 이상 갈 곳이 없을 때까지 탐색
-        while (!queue.isEmpty()) {
-            String next = queue.poll();
-            dfs(next);
+
+    private void dfs(String current, String path, String[][] tickets, int count) {
+        if (count == tickets.length) {
+            answer.add(path);
+            return;
         }
-        // 모든 경로가 탐색되었을 때 현재 출발지를 정답에 추가
-        answer.add(0,start);
+
+        for (int i = 0; i < tickets.length; i++) {
+            if (!visited[i] && tickets[i][0].equals(current)) {
+                visited[i] = true;
+                dfs(tickets[i][1], path + " " + tickets[i][1], tickets, count + 1);
+                visited[i] = false; // 백트래킹
+            }
+        }
     }
 }
