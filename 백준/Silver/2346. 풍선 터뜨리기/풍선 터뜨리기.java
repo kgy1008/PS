@@ -1,71 +1,58 @@
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.HashMap;
 import java.util.StringTokenizer;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+        int N = Integer.parseInt(br.readLine()); // 풍선의 개수
 
-        int n = Integer.parseInt(br.readLine());
-        int[] nums = new int[n];
+        HashMap<Integer, Integer> balloons = new HashMap<>();
+        Deque<Integer> deque = new ArrayDeque<>();
+
         StringTokenizer st = new StringTokenizer(br.readLine());
-        for (int i = 0; i < n; i++) {
-            nums[i] = Integer.parseInt(st.nextToken());
+        for (int i = 1; i <= N; i++) {
+            int value = Integer.parseInt(st.nextToken());
+            deque.add(i); // 풍선 번호를 덱에 추가
+            balloons.put(i, value); // 풍선 번호와 값 저장
         }
-        br.close();
 
-        boolean[] visited = new boolean[n];
+        StringBuilder result = new StringBuilder();
 
-        int cur = 0;
-        visited[cur] = true;
-        StringBuilder sb = new StringBuilder();
-        sb.append(1).append(" ");
+        int start = deque.pollFirst();
+        int count = N;
+        while (count-- > 0) {
+            result.append(start).append(" "); // 현재 풍선 번호를 결과에 추가
+            int v = balloons.get(start);
 
-        while (check(visited)) {
-            int move = nums[cur];
-
-            if (move > 0) { // 오른쪽으로 이동
-                while (move != 0) {
-                    while (visited[(cur + 1) % n]) {
-                        cur = (cur + 1) % n;
+            if (v > 0) { // 양수일 경우 -> 오른쪽으로 이동
+                while (v > 0 && !deque.isEmpty()) {
+                    v -= 1;
+                    int out = deque.pollFirst(); // 현재 풍선 제거
+                    if (v == 0) {
+                        start = out;
+                        continue;
                     }
-                    move--;
-                    cur++;
-                    if (cur == n) {
-                        cur = 0;
-                    }
+                    deque.offerLast(out); // 오른쪽으로 이동
                 }
-            } else { // 왼쪽으로 이동
-                while (move != 0) {
-                    while (visited[(cur - 1 + n) % n]) {
-                        cur = (cur - 1 + n) % n;
+            } else { // 음수일 경우 -> 왼쪽으로 이동
+                v = v * -1;
+                while (v > 0 && !deque.isEmpty()) {
+                    v -= 1;
+                    int out = deque.pollLast(); // 현재 풍선 제거
+                    if (v == 0) {
+                        start = out;
+                        continue;
                     }
-                    move++;
-                    cur--;
-                    if (cur < 0) {
-                        cur = n - 1;
-                    }
+                    deque.offerFirst(out); // 왼쪽으로 이동
                 }
             }
-            visited[cur] = true;
-            sb.append(cur + 1).append(" ");
         }
 
-        bw.write(sb.toString());
-        bw.flush();
-        bw.close();
-    }
+        System.out.println(result.toString().trim());
 
-    private static boolean check(boolean[] visited) {
-        for (boolean b : visited) {
-            if (!b) { // 방문하지 않은 곳이 있음
-                return true;
-            }
-        }
-        return false;
     }
 }
