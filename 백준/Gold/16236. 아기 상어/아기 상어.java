@@ -1,91 +1,94 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayDeque;
 import java.util.Comparator;
 import java.util.Deque;
 import java.util.PriorityQueue;
-import java.util.Scanner;
+import java.util.StringTokenizer;
 
 public class Main {
-    static int N;
-    static int[][] map;
-    static boolean[][] visited;
-    static int[] dx = {-1, 1, 0, 0};
-    static int[] dy = {0, 0, -1, 1};
-    static int sharkX, sharkY, sharkSize = 2, eatSize = 0;
-    static int totalTime = 0;
 
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        N = sc.nextInt();
-        map = new int[N][N];
+    private static int n;
+    private static int[] dx = {0, -1, 1, 0};
+    private static int[] dy = {1, 0, 0, -1};
+    private static int time = 0;
+    private static int size = 2;
+    private static int[][] board;
 
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-                map[i][j] = sc.nextInt();
-                if (map[i][j] == 9) {
-                    sharkX = i;
-                    sharkY = j;
-                    map[i][j] = 0;
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st;
+
+        n = Integer.parseInt(br.readLine()); // 공간의 크기
+
+        board = new int[n][n];
+
+        int startX = 0, startY = 0;
+        for (int i = 0; i < n; i++) {
+            st = new StringTokenizer(br.readLine());
+            for (int j = 0; j < n; j++) {
+                board[i][j] = Integer.parseInt(st.nextToken());
+                if (board[i][j] == 9) {
+                    startX = i;
+                    startY = j;
+                    board[i][j] = 0;
                 }
             }
         }
 
+        int eatCount = 0;
         while (true) {
-            Position fish = bfs();
-            if (fish == null) { // 먹을 수 있는 물고기가 없으면 종료
+            Position fish = bfs(startX, startY);
+            if (fish == null) {
                 break;
             }
 
-            sharkX = fish.x;
-            sharkY = fish.y;
-            totalTime += fish.distance;
-            map[sharkX][sharkY] = 0;
-            eatSize++;
+            startX = fish.x;
+            startY = fish.y;
+            time += fish.distance;
+            board[fish.x][fish.y] = 0;
+            eatCount++;
 
-            // 자신의 크기와 같은 수의 물고기를 먹으면 크기 증가
-            if (eatSize == sharkSize) {
-                sharkSize++;
-                eatSize = 0;
+            if (eatCount == size) {
+                size++;
+                eatCount = 0;
             }
         }
-
-        System.out.println(totalTime);
+        System.out.println(time);
     }
 
-    static Position bfs() {
+    private static Position bfs(int startX, int startY) {
         Deque<Position> queue = new ArrayDeque<>();
-        visited = new boolean[N][N];
-        queue.add(new Position(sharkX, sharkY, 0));
-        visited[sharkX][sharkY] = true;
+        boolean[][] visited = new boolean[n][n];
+        queue.offer(new Position(startX, startY, 0));
+        visited[startX][startY] = true;
 
-        PriorityQueue<Position> fishes = new PriorityQueue<>(
-                Comparator.comparingInt((Position p) -> p.distance) // 거리 순
-                        .thenComparingInt(p -> p.x)              // 가장 위쪽
-                        .thenComparingInt(p -> p.y));            // 가장 왼쪽
+        PriorityQueue<Position> pq = new PriorityQueue<>(
+                Comparator.comparingInt((Position o) -> o.distance).thenComparing(o -> o.x).thenComparing(o -> o.y));
 
         while (!queue.isEmpty()) {
             Position pos = queue.poll();
 
             for (int i = 0; i < 4; i++) {
-                int nx = pos.x + dx[i];
-                int ny = pos.y + dy[i];
+                int x = pos.x + dx[i];
+                int y = pos.y + dy[i];
 
-                if (nx >= 0 && ny >= 0 && nx < N && ny < N && !visited[nx][ny]) {
-                    visited[nx][ny] = true;
+                if (x < 0 || x >= n || y < 0 || y >= n || visited[x][y]) {
+                    continue;
+                }
 
-                    // 상어가 이동할 수 있는 경우 (자신의 크기보다 작거나 같은 칸)
-                    if (map[nx][ny] <= sharkSize) {
-                        queue.add(new Position(nx, ny, pos.distance + 1));
+                visited[x][y] = true;
+                if (board[x][y] <= size) {
+                    queue.offer(new Position(x, y, pos.distance + 1));
 
-                        // 먹을 수 있는 물고기라면
-                        if (map[nx][ny] != 0 && map[nx][ny] < sharkSize) {
-                            fishes.add(new Position(nx, ny, pos.distance + 1));
-                        }
+                    if (board[x][y] != 0 && board[x][y] < size) {
+                        pq.offer(new Position(x, y, pos.distance + 1));
                     }
                 }
             }
         }
-
-        return fishes.isEmpty() ? null : fishes.poll(); // 가장 가까운 물고기 반환
+        return pq.isEmpty() ? null : pq.poll();
     }
 
     static class Position {
@@ -93,7 +96,7 @@ public class Main {
         int y;
         int distance;
 
-        public Position(final int x, final int y, final int distance) {
+        Position(int x, int y, int distance) {
             this.x = x;
             this.y = y;
             this.distance = distance;
