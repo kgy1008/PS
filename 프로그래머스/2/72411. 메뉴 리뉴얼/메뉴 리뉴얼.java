@@ -1,46 +1,57 @@
 import java.util.*;
 
-public class Solution {
-
-    private static HashMap<Integer, HashMap<String, Integer>> courseMap;
+class Solution {
+    private static HashMap<Integer, HashMap<String, Integer>> map = new HashMap<>();
 
     public String[] solution(String[] orders, int[] course) {
-        courseMap = new HashMap<>();
-        for (int i : course) {
-            courseMap.put(i, new HashMap<>());
+        // course에 해당하는 길이별로 map 초기화
+        for (int c : course) {
+            map.put(c, new HashMap<>());
         }
 
-        for (String order : orders) {
-            char[] orderArray = order.toCharArray();
-            Arrays.sort(orderArray);
-            combinations(0, orderArray, "");
+        for (int c : course) {
+            HashMap<String, Integer> combi = map.get(c);
+            for (String order : orders) {
+                if (order.length() >= c) {
+                    char[] arr = order.toCharArray();
+                    Arrays.sort(arr); // 사전순 조합 생성을 위해 정렬
+                    getCombination(0, c, combi, arr, new StringBuilder());
+                }
+            }
         }
 
-        ArrayList<String> answer = new ArrayList<>();
+        List<String> answer = new ArrayList<>();
+        for (int c : course) {
+            HashMap<String, Integer> tmp = map.get(c);
 
-        for (HashMap<String, Integer> count : courseMap.values()) {
-            count.values()
-                    .stream()
-                    .max(Comparator.comparingInt(o -> o))
-                    .ifPresent(cnt -> count.entrySet() 
-                            .stream()
-                            .filter(entry -> cnt.equals(entry.getValue()) && cnt > 1)
-                            .forEach(entry -> answer.add(entry.getKey())));
+            int max = 0;
+            for (int value : tmp.values()) {
+                max = Math.max(max, value);
+            }
+
+            for (String key : tmp.keySet()) {
+                int v = tmp.get(key);
+                if (max > 1 && v == max) {
+                    answer.add(key);
+                }
+            }
         }
 
-        Collections.sort(answer); 
+        Collections.sort(answer);
         return answer.toArray(new String[0]);
     }
 
-    public static void combinations(int idx, char[] order, String result) {
-        if (courseMap.containsKey(result.length())) {
-            HashMap<String, Integer> map = courseMap.get(result.length());
-            map.put(result, map.getOrDefault(result, 0) + 1);
+    private void getCombination(int idx, int count, HashMap<String, Integer> combi, char[] order, StringBuilder sb) {
+        if (sb.length() == count) {
+            String target = sb.toString();
+            combi.put(target, combi.getOrDefault(target, 0) + 1);
+            return;
         }
 
         for (int i = idx; i < order.length; i++) {
-            combinations(i + 1, order, result + order[i]);
+            sb.append(order[i]);
+            getCombination(i + 1, count, combi, order, sb); // 조합을 위해 i + 1 사용
+            sb.deleteCharAt(sb.length() - 1); // 마지막 문자 제거
         }
     }
-
 }
