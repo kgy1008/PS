@@ -1,55 +1,42 @@
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.StringTokenizer;
 
 public class Main {
-
-    static List<List<Integer>> list = new ArrayList<>();
-    static int[] nums;
+    private static int[] nums;
+    private static StringBuilder sb = new StringBuilder();
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
         StringTokenizer st = new StringTokenizer(br.readLine());
 
-        int n = Integer.parseInt(st.nextToken());
-        int m = Integer.parseInt(st.nextToken());
+        int n = Integer.parseInt(st.nextToken()); // N까지의 숫자
+        int m = Integer.parseInt(st.nextToken()); // 선택 횟수
 
         nums = new int[n];
         for (int i = 0; i < n; i++) {
             nums[i] = i + 1;
         }
 
-        combination(m, 0, new ArrayList<>());
-
-        StringBuilder sb = new StringBuilder();
-        for (List<Integer> numbers : list) {
-
-            for (int num : numbers) {
-                sb.append(num).append(" ");
-            }
-            sb.append("\n");
-        }
-
-        bw.write(sb.toString());
-        bw.flush();
+        combination(0, m);
     }
 
-    static void combination(int m, int idx, List<Integer> number) {
-        if (m == 0) {
-            list.add(new ArrayList<>(number));
+    private static void combination(int idx, int m) {
+        if (sb.length() == m) {
+            String answer = sb.toString().trim();
+            StringBuilder tmp = new StringBuilder();
+            for (int i = 0; i < answer.length(); i++) {
+                tmp.append(answer.charAt(i)).append(" ");
+            }
+            System.out.println(tmp.toString());
             return;
         }
 
         for (int i = idx; i < nums.length; i++) {
-            number.add(nums[i]);
-            combination(m - 1, i + 1, number);
-            number.remove(number.size() - 1);
+            sb.append(nums[i]);
+            combination(i + 1, m);
+            sb.deleteCharAt(sb.length() - 1);
         }
     }
 }
