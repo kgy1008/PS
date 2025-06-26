@@ -3,7 +3,7 @@ import java.util.*;
 class Solution {
     public int solution(int[][] jobs) {
         // 작업을 요청시간 순으로 정렬
-        Arrays.sort(jobs, (a, b) -> a[0] - b[0]);
+        Arrays.sort(jobs, (a, b) -> Integer.compare(a[0], b[0]));
         
         // 소요시간이 짧은 순으로 우선순위 큐 생성
         PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[1] - b[1]);
