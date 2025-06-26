@@ -1,27 +1,34 @@
 import java.util.*;
 
 class Solution {
-    static List<String> list = new ArrayList<>();
-    static String [] words = {"A", "E", "I", "O", "U"};
+    private static List<String> list = new ArrayList<>();
+    private static String[] arr = new String[]{"A", "E", "I", "O", "U"};
     
     public int solution(String word) {
-        dfs("", 0);
-
-        int answer = 0;
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).equals(word)) {
-                answer = i;
+        for (int len=1; len<=5; len++) {
+            find(len, "");
+        }
+        
+        Collections.sort(list);
+        
+        int answer = 1;
+        for (String s : list) {
+            if (word.equals(s)) {
                 break;
             }
+            answer++;
         }
         return answer;
     }
-
-    static void dfs(String str, int len) {
-        list.add(str);
-        if (len == 5) return;
-        for (int i = 0; i < 5; i++) {
-            dfs(str + words[i], len + 1);
+    
+    private static void find(int len, String word) {
+        if (word.length() == len) {
+            list.add(word);
+            return;
+        }
+        
+        for (int i=0; i<arr.length; i++) {
+            find(len, word+arr[i]);
         }
     }
 }
