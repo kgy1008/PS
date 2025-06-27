@@ -1,30 +1,39 @@
 import java.util.*;
 
 class Solution {
-    List<String> answer = new ArrayList<>();
-    boolean[] visited;
-
+    private static HashMap<String, PriorityQueue<String>> map = new HashMap<>();
+    private static List<String> answer = new ArrayList<>();
+    
     public String[] solution(String[][] tickets) {
-        Arrays.sort(tickets, (a, b) -> a[1].compareTo(b[1])); // 오름차순 정렬
-
-        visited = new boolean[tickets.length];
-        dfs("ICN", "ICN", tickets, 0);
-
-        return answer.get(0).split(" ");
-    }
-
-    private void dfs(String current, String path, String[][] tickets, int count) {
-        if (count == tickets.length) {
-            answer.add(path);
-            return;
-        }
-
-        for (int i = 0; i < tickets.length; i++) {
-            if (!visited[i] && tickets[i][0].equals(current)) {
-                visited[i] = true;
-                dfs(tickets[i][1], path + " " + tickets[i][1], tickets, count + 1);
-                visited[i] = false; // 백트래킹
+        // pq 초기화
+        for (String[] ticket : tickets) {
+            String start = ticket[0];
+            String end = ticket[1];
+            
+            if (!map.containsKey(start)) {
+                map.put(start, new PriorityQueue<>());
             }
+            map.get(start).offer(end);
+        }  
+        
+        // 시작
+        String start = "ICN";
+        travel(start);
+        
+        String[] result = new String[answer.size()];
+        for (int i=0; i<answer.size(); i++) {
+            result[answer.size()-i-1] = answer.get(i);
         }
+        return result;
+    }
+    
+    private static void travel(String start) {
+        PriorityQueue<String> pq = map.getOrDefault(start, new PriorityQueue<>());
+        
+        while (!pq.isEmpty()) {
+            String next = pq.poll();
+            travel(next);
+        }
+        answer.add(start);
     }
 }
