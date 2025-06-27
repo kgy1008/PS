@@ -20,39 +20,36 @@ class Solution {
                 number += file.charAt(i);
                 i++;
             }
+            
+            String tail = file.substring(i);
  
-            list.add(new Word(file, head, number));
+            list.add(new Word(head, number, tail));
         }
         
-        // 정렬
-        list.sort((o1, o2) -> {
-            int headCompare = o1.head.toLowerCase().compareTo(o2.head.toLowerCase());
-            if (headCompare == 0) {
-                int num1 = Integer.parseInt(o1.number);
-                int num2 = Integer.parseInt(o2.number);
-                return Integer.compare(num1, num2); 
-            }
-            
-            return headCompare;
-        });
+ 
+        list.sort(
+            Comparator.comparing((Word o) -> o.head.toLowerCase())
+              .thenComparing(o -> Integer.parseInt(o.number))
+        );
+
         
-        // 결과
         String[] result = new String[list.size()];
         for (int i = 0; i < list.size(); i++) {
-            result[i] = list.get(i).original;
+            Word word = list.get(i);
+            result[i] = word.head + word.number + word.tail;
         }
         return result;
     }
-
+    
     private class Word {
-        String original;
         String head;
         String number;
-
-        Word(String original, String head, String number) {
-            this.original = original;
+        String tail;
+        
+        Word(String head, String number, String tail) {
             this.head = head;
             this.number = number;
+            this.tail = tail;
         }
     }
 }
