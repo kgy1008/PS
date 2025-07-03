@@ -24,11 +24,11 @@ public class Main {
         }
         br.close();
 
-        Arrays.sort(lines, Comparator.comparingInt(o -> o.b));
+        Arrays.sort(lines, Comparator.comparingInt(o -> o.a));
 
         int[] num = new int[n];
         for (int i = 0; i < n; i++) {
-            num[i] = lines[i].a;
+            num[i] = lines[i].b;
         }
 
         trace = new int[n];
