@@ -31,7 +31,6 @@ public class Main {
             num[i] = lines[i].b;
         }
 
-        trace = new int[n];
         lis = new int[n];
 
         lis[0] = num[0];
@@ -40,11 +39,9 @@ public class Main {
         for (int i = 1; i < n; i++) {
             if (lis[lastIndex] < num[i]) {
                 lis[++lastIndex] = num[i];
-                trace[i] = lastIndex;
             } else {
                 int idx = lowerBound(num[i], lastIndex);
                 lis[idx] = num[i];
-                trace[i] = idx;
             }
         }
 
