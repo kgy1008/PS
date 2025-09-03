@@ -3,26 +3,25 @@ import java.util.*;
 class Solution {
     public long solution(int n, int[] times) {
         Arrays.sort(times);
-        long end = times[times.length-1] * (long)n;
-        long start = 0;
-        long answer = end;
-        
-        while (start <= end) {
-            long mid = (end + start) / 2;
-            long person = 0;
-            
+        long max = ((long) times[times.length - 1]) * n;
+        long min = 0L;
+        long answer = max;
+
+        while (min < max) {
+            long mid = (max + min) / 2L;
+            long count = 0L;
+
             for (int time : times) {
-                person += (mid / time);
+                count += (mid / time);
             }
-            
-            if (person >= n) {
-                answer = mid;
-                end = mid - 1;
+
+            if (count < n) {
+                min = mid + 1;
             } else {
-                start = mid + 1;
+                max = mid;
             }
         }
-        
-        return answer;
+
+        return max;
     }
 }
