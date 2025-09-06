@@ -1,34 +1,31 @@
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
 public class Main {
-    static List<Integer>[] adjList;
+
+    static int minPerson;
+    static List<Integer>[] graph;
     static int[][] dp;
     static boolean[] visited;
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int n = Integer.parseInt(br.readLine());
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
-        adjList = new ArrayList[n + 1];
-        dp = new int[n + 1][2];  // [][0] = 얼리 어답터 X, [][1] = 얼리 어답터 O
-        visited = new boolean[n + 1];
-
-        for (int i = 1; i <= n; i++) {
-            adjList[i] = new ArrayList<>();
-        }
+        int n = Integer.parseInt(st.nextToken());
+        minPerson = n;
+        init(n);
 
         for (int i = 0; i < n - 1; i++) {
-            StringTokenizer st = new StringTokenizer(br.readLine());
-            int a = Integer.parseInt(st.nextToken());
-            int b = Integer.parseInt(st.nextToken());
+            st = new StringTokenizer(br.readLine());
+            int u = Integer.parseInt(st.nextToken());
+            int v = Integer.parseInt(st.nextToken());
 
-            adjList[a].add(b);
-            adjList[b].add(a);
+            graph[u].add(v);
+            graph[v].add(u);
         }
 
         dfs(1);
@@ -38,15 +35,25 @@ public class Main {
 
     private static void dfs(int node) {
         visited[node] = true;
-        dp[node][0] = 0;  // 이 노드가 얼리 어답터가 아닐 때
-        dp[node][1] = 1;  // 이 노드가 얼리 어답터일 때
+        dp[node][0] = 0;
+        dp[node][1] = 1;
 
-        for (int child : adjList[node]) {
-            if (!visited[child]) {
-                dfs(child);
-                dp[node][0] += dp[child][1];  // 내가 얼리 어답터 X -> 자식은 얼리 어답터 O
-                dp[node][1] += Math.min(dp[child][0], dp[child][1]);  // 내가 얼리 어답터 O -> 자식은 아무거나 가능
+        for (int next : graph[node]) {
+            if (!visited[next]) {
+                dfs(next);
+                dp[node][0] += dp[next][1]; // 현재 노드가 얼리어답터가 아닐 때, 자식 노드는 무조건 얼리어답터여야 함
+                dp[node][1] += Math.min(dp[next][0], dp[next][1]); // 현재 노드가 얼리어답터일 때, 자식 노드는 얼리어답터여도 되고 아니어도 됨
             }
         }
+    }
+
+    private static void init(int n) {
+        graph = new List[n + 1];
+        for (int i = 0; i <= n; i++) {
+            graph[i] = new ArrayList<>();
+        }
+
+        dp = new int[n + 1][2]; // [][0]: 해당 노드가 얼리어답터가 아닐 때, [][1]: 해당 노드가 얼리어답터일 때
+        visited = new boolean[n + 1];
     }
 }
