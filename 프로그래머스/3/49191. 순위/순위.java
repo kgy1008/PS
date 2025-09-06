@@ -1,36 +1,69 @@
-class Solution {
-    public int solution(int n, int[][] results) {
-        int[][] graph = new int[n + 1][n + 1];
-		for (int[] edge : results) {
-			graph[edge[0]][edge[1]] = 1;
-			graph[edge[1]][edge[0]] = - 1;
-		}
+import java.util.*;
 
-		for (int i = 1; i <= n; i++) {
-			for (int j = 1; j <= n; j++) {
-				for (int k = 1; k <= n; k++) {
-					if(graph[i][k] == 1 && graph[k][j] == 1) {
-						graph[i][j] = 1;
-						graph[j][i] = -1;
-					}
-					
-					if(graph[i][k] == -1 && graph[k][j] == -1) {
-						graph[i][j] = -1;
-						graph[j][i] = 1;
-					}
-				}
-			}
-		}
-		
-		int answer = 0;
-		
-		for(int i = 0 ; i <=n; i++) {
-			int count = 0;
-			for (int j = 0; j <= n; j++) {
-				if(graph[i][j] != 0) count++;
-			}
-			if(count == n-1) answer++;
-		}
+class Solution {
+    static List<Integer>[] adjList;
+    static List<Integer>[] reverseAdjList;
+    
+    public int solution(int n, int[][] results) {
+        init(n);
+        
+        for (int[] result : results) {
+            int from = result[0];
+            int to = result[1];
+            adjList[to].add(from);
+            reverseAdjList[from].add(to);
+        }
+        
+        int answer = 0;
+        for (int i=1; i<=n; i++) {
+            boolean[] visited = new boolean[n+1];
+            int cntUpper = countUpper(i, visited) - 1;
+            
+            Arrays.fill(visited, false);
+            int cntLower = countLower(i, visited) - 1;
+            
+            int totalCnt = cntUpper + cntLower;
+            if (totalCnt == n-1) {
+                answer++;
+            }
+        }
+        
         return answer;
+    }
+    
+    private static int countUpper(int start, boolean[] visited) {
+        visited[start] = true;
+        int cnt = 1;
+        
+        for (int next : adjList[start]) {
+            if (!visited[next]) {
+                visited[next] = true;
+                cnt += countUpper(next, visited);
+            }
+        }
+        return cnt;
+    }
+    
+    private static int countLower(int start, boolean[] visited) {
+        visited[start] = true;
+        int cnt = 1;
+        
+        for (int next : reverseAdjList[start]) {
+            if (!visited[next]) {
+                visited[next] = true;
+                cnt += countLower(next, visited);
+            }
+        }
+        return cnt;
+    }
+    
+    private static void init(int n) {
+        adjList = new List[n+1];
+        reverseAdjList = new List[n+1];
+        
+        for (int i=0; i<=n; i++) {
+            adjList[i] = new ArrayList<>();
+            reverseAdjList[i] = new ArrayList<>();
+        }
     }
 }
