@@ -1,105 +1,108 @@
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.StringTokenizer;
 
 public class Main {
-    static Map<Integer, List<Integer>> map = new HashMap<>();
-    static int[][] room; // 방의 상태를 저장하는 배열
-    static int[] dx = {0, 0, 1, -1}; // 상하좌우 이동
-    static int[] dy = {1, -1, 0, 0}; // 상하좌우 이동
-    static boolean flag = true;
+    static int[][] room;
+    static HashMap<String, List<String>> map = new HashMap<>();
+    static int[] dx = {0, 0, 1, -1};
+    static int[] dy = {1, -1, 0, 0};
+    static boolean isLight = true;  // 더 불을 켤 곳이 남아있는지 추적하는 용도
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
 
-        int n = Integer.parseInt(st.nextToken()); // 방의 크기
-        int m = Integer.parseInt(st.nextToken());
-
+        int n = Integer.parseInt(st.nextToken());
         room = new int[n + 1][n + 1];
+        room[1][1] = 1; // 1: 불 켜져있음,  0: 불 꺼져있음
+
+        int m = Integer.parseInt(st.nextToken());
 
         for (int i = 0; i < m; i++) {
             st = new StringTokenizer(br.readLine());
-            int x = Integer.parseInt(st.nextToken());
-            int y = Integer.parseInt(st.nextToken());
-            int a = Integer.parseInt(st.nextToken());
-            int b = Integer.parseInt(st.nextToken());
+            int x1 = Integer.parseInt(st.nextToken());
+            int y1 = Integer.parseInt(st.nextToken());
+            int x2 = Integer.parseInt(st.nextToken());
+            int y2 = Integer.parseInt(st.nextToken());
 
-            int start = x * n + y; // 방의 번호
-            int end = a * n + b; // 열쇠가 있는 방의 번호
+            String key = x1 + " " + y1;
+            String value = x2 + " " + y2;
+            List<String> list = map.getOrDefault(key, new ArrayList<>());
+            list.add(value);
+            map.put(key, list);
+        }
 
-            if (!map.containsKey(start)) {
-                map.put(start, new ArrayList<>());
+        while (isLight) {
+            bfs(n + 1);
+        }
+
+        int answer = count(n + 1);
+        System.out.println(answer);
+    }
+
+    private static int count(int n) {
+        int cnt = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                cnt += room[i][j];
             }
-
-            map.get(start).add(end);
         }
-
-        room[1][1] = 1; // 불 켜져있음
-        while (flag) {
-            bfs(n);
-        }
-
-        int count = 0; // 켜진 불의 개수
-        for (int i = 1; i <= n; i++) {
-            for (int j = 1; j <= n; j++) {
-                count += room[i][j];
-            }
-        }
-
-        System.out.println(count);
+        return cnt;
     }
 
     private static void bfs(int n) {
-        boolean[][] visited = new boolean[n + 1][n + 1];
+        boolean[][] visited = new boolean[n][n];
         Deque<int[]> queue = new ArrayDeque<>();
+        queue.offer(new int[]{1, 1}); // 처음에는 {1,1}만 불 켜져있음
+        visited[1][1] = true;
 
-        queue.add(new int[]{1, 1}); // 시작점 (1, 1) 고정
-        visited[1][1] = true; // 시작점 방문 처리
-        flag = false;
+        isLight = false;
 
-        // 이동
         while (!queue.isEmpty()) {
-            int[] current = queue.poll();
-            int curX = current[0];
-            int curY = current[1];
+            int[] cur = queue.poll();
+            int x1 = cur[0];
+            int y1 = cur[1];
 
-            // 불 켜기
-            int key = curX * n + curY;
-            if (map.containsKey(key)) {
-                List<Integer> lightOn = map.get(key);
-
-                for (int light : lightOn) {
-                    int b = light % n == 0 ? n : light % n;
-                    int a = (light - b) / n;
-
-                    if (room[a][b] == 0) { // 방이 꺼져있다면
-                        room[a][b] = 1; // 불 켜기
-                        flag = true;
-                    }
-                }
-            }
+            lightOnOrOff(x1, y1); // 다른 방 불 켜기
 
             for (int i = 0; i < 4; i++) {
-                int nx = curX + dx[i];
-                int ny = curY + dy[i];
+                int nx = x1 + dx[i];
+                int ny = y1 + dy[i];
 
-                if (nx < 1 || nx > n || ny < 1 || ny > n) {
+                if (nx < 1 || nx >= n || ny < 1 || ny >= n) {
                     continue;
                 }
 
-                if (room[nx][ny] == 1 && !visited[nx][ny]) { // 불이 켜져있는 방으로 이동
-                    visited[nx][ny] = true; // 방문 처리
-                    queue.add(new int[]{nx, ny}); // 큐에 추가
+                if (room[nx][ny] == 1 && !visited[nx][ny]) { // 불이 켜져있다면
+                    visited[nx][ny] = true;
+                    queue.offer(new int[]{nx, ny}); // 이동
                 }
             }
+        }
+    }
+
+    private static void lightOnOrOff(int x, int y) {
+        String key = x + " " + y;
+
+        if (map.containsKey(key)) { // 다른 방의 불을 켤 스위치가 있다면
+            List<String> list = map.get(key);
+            for (String str : list) {
+                String[] split = str.split(" ");
+                int x2 = Integer.parseInt(split[0]);
+                int y2 = Integer.parseInt(split[1]);
+
+                if (room[x2][y2] == 0) { // 불이 꺼져있다면
+                    room[x2][y2] = 1; // 불을 켠다
+                    isLight = true;
+                }
+            }
+            map.remove(key); // 불을 모두 켜면 삭제
         }
     }
 }
