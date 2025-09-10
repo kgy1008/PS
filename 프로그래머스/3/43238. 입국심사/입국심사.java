@@ -5,7 +5,6 @@ class Solution {
         Arrays.sort(times);
         long max = ((long) times[times.length - 1]) * n;
         long min = 0L;
-        long answer = max;
 
         while (min < max) {
             long mid = (max + min) / 2L;
