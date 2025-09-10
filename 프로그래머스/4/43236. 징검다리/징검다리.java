@@ -24,7 +24,7 @@ class Solution {
     
     private boolean isPossible(int minDistance, int[] rocks, int n, int distance) {
         int removedRocks = 0;
-        int lastPosition = 0;
+        int lastPosition = 0; 
         
         for (int rockPosition : rocks) {
             if (rockPosition - lastPosition < minDistance) {
@@ -34,7 +34,7 @@ class Solution {
             }
         }
         
-        // 마지막 돌과 도착점(distance) 사이의 거리 확인
+        // 마지막 바위와 도착점(distance) 사이의 거리 확인
         if (distance - lastPosition < minDistance) {
             removedRocks++;
         }
