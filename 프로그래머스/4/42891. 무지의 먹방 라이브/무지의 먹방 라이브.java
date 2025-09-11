@@ -10,7 +10,7 @@ class Solution {
             return -1;
         }
 
-        PriorityQueue<Food> pq = new PriorityQueue<>((o1, o2) -> Integer.compare(o1.time, o2.time));
+        PriorityQueue<Food> pq = new PriorityQueue<>((o1, o2) -> Long.compare(o1.time, o2.time));
         for (int i = 0; i < food_times.length; i++) {
             pq.offer(new Food(i + 1, food_times[i]));
         }
@@ -18,11 +18,11 @@ class Solution {
         long totalTime = 0L;
         long previousTime = 0L;
 
-        while (totalTime + (long) (pq.peek().time - previousTime) * pq.size() <= k) {
+        while (totalTime + (pq.peek().time - previousTime) * pq.size() <= k) {
             Food food = pq.poll();
-            long timeDiff = (long) food.time - previousTime;
+            long timeDiff = food.time - previousTime;
             totalTime += timeDiff * (pq.size() + 1);
-            previousTime = (long) food.time;
+            previousTime = food.time;
         }
 
         List<Food> list = new ArrayList<>(pq);
@@ -33,9 +33,9 @@ class Solution {
 
     static class Food {
         int num;
-        int time;
+        long time;
 
-        Food(int num, int time) {
+        Food(int num, long time) {
             this.num = num;
             this.time = time;
         }
