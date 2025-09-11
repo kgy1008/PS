@@ -8,50 +8,55 @@ public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        // i에서 j로 이동하는데 필요한 비용 배열에 저장
-        int[][] map = {{0, 2, 2, 2, 2}, {2, 1, 3, 4, 3}, {2, 3, 1, 3, 4}, {2, 4, 3, 1, 3}, {2, 3, 4, 3, 1}};
-
-        int[][][] dp = new int[100001][5][5];  // (T,L,R)
-        // 배열 초기화
-        for (int k = 0; k < 100001; k++) {
-            for (int i = 0; i < 5; i++) {
-                for (int j = 0; j < 5; j++) {
-                    dp[k][i][j] = 100001 * 4;  // 충분히 큰 값으로 초기화
-                }
-            }
-        }
-        dp[0][0][0] = 0; // 첫 시작점은 힘 0으로 초기화
-
-        int turn = 1;
+        int[][][] dp = new int[100_001][5][5]; // (Turn, Left, Right)
+        init(dp);
 
         StringTokenizer st = new StringTokenizer(br.readLine());
+        int turn = 1;
         while (true) {
             int n = Integer.parseInt(st.nextToken());
 
-            if (n == 0) {  // 0이 들어오면 종료
+            if (n == 0) {
                 break;
             }
 
-            // 오른발이 움직임
-            for (int i = 0; i < 5; i++) {
-                if (n == i) {  // 이미 움직이고자 하는 칸에 존재
+            // 오른발을 움직임
+            for (int i = 0; i < 5; i++) { // 왼발의 위치
+                if (i == n) { // 왼발이 위치한 곳으로 이동 불가능
                     continue;
                 }
-                for (int j = 0; j < 5; j++) {
-                    dp[turn][i][n] = Math.min(dp[turn - 1][i][j] + map[j][n], dp[turn][i][n]);
-                }
-            }
 
-            // 왼발이 움직임
-            for (int j = 0; j < 5; j++) {
-                for (int i = 0; i < 5; i++) {
-                    if (i == j) {
-                        continue;
+                for (int j = 0; j < 5; j++) { // 직전의 오른발 위치
+                    if (j == 0) {
+                        dp[turn][i][n] = Math.min(dp[turn][i][n], dp[turn - 1][i][j] + 2);
+                    } else if (j == n) { // 같은 곳
+                        dp[turn][i][n] = Math.min(dp[turn][i][n], dp[turn - 1][i][j] + 1);
+                    } else if (n % 2 == j % 2) { // 반대편
+                        dp[turn][i][n] = Math.min(dp[turn][i][n], dp[turn - 1][i][j] + 4);
+                    } else { // 인접
+                        dp[turn][i][n] = Math.min(dp[turn][i][n], dp[turn - 1][i][j] + 3);
                     }
-                    dp[turn][n][j] = Math.min(dp[turn - 1][i][j] + map[i][n], dp[turn][n][j]);
                 }
             }
 
+            // 왼발을 움직임
+            for (int i = 0; i < 5; i++) { // 오른발의 위치
+                if (i == n) { // 오른발이 위치한 곳으로 이동 불가능
+                    continue;
+                }
+
+                for (int j = 0; j < 5; j++) { // 직전의 왼발 위치
+                    if (j == 0) {
+                        dp[turn][n][i] = Math.min(dp[turn][n][i], dp[turn - 1][j][i] + 2);
+                    } else if (j == n) { // 같은 곳
+                        dp[turn][n][i] = Math.min(dp[turn][n][i], dp[turn - 1][j][i] + 1);
+                    } else if (n % 2 == j % 2) { // 반대편
+                        dp[turn][n][i] = Math.min(dp[turn][n][i], dp[turn - 1][j][i] + 4);
+                    } else { // 인접
+                        dp[turn][n][i] = Math.min(dp[turn][n][i], dp[turn - 1][j][i] + 3);
+                    }
+                }
+            }
             turn++;
         }
 
@@ -62,5 +67,16 @@ public class Main {
             }
         }
         System.out.println(min);
+    }
+
+    private static void init(int[][][] dp) {
+        for (int i = 0; i < 100_001; i++) {
+            for (int j = 0; j < 5; j++) {
+                for (int k = 0; k < 5; k++) {
+                    dp[i][j][k] = 987654321;
+                }
+            }
+        }
+        dp[0][0][0] = 0;
     }
 }
