@@ -13,24 +13,24 @@ public class Main {
 
         int[] answer = new int[n];
 
-        int start = 1;
-        int end = n;
+        int max = n; // 될 수 있는 최대값
+        int min = 1; // 될 수 있는 최소값
 
-        for (int i = 1; i <= n; i++) {
-            if (k >= (n - i)) {
-                k -= n - i;
-                answer[i - 1] = end--;
+        for (int i = 0; i < n; i++) {
+            if ((n - i - 1) <= k) {
+                answer[i] = max--;
+                k -= (n - i - 1);
             } else {
-                answer[i - 1] = start++;
+                answer[i] = min++;
             }
         }
 
-        if (k != 0) {
-            System.out.println(-1);
-        } else {
+        if (k == 0) {
             for (int i = 0; i < n; i++) {
                 System.out.print(answer[i] + " ");
             }
+        } else {
+            System.out.println(-1);
         }
     }
 }
