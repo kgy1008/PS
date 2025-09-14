@@ -49,6 +49,7 @@ public class Main {
                 edges.add(new Edge(s, e, -t));
             }
 
+            // 가상의 노드 0 추가
             for (int i = 1; i <= N; i++) {
                 edges.add(new Edge(0, i, 0));
             }
@@ -66,15 +67,15 @@ public class Main {
 
     private static boolean bellmanFord() {
         Arrays.fill(distance, INF);
-        distance[0] = 0;
+        distance[0] = 0L; // 시작점 거리 0으로
 
         for (int i = 0; i <= N; i++) {
             for (Edge edge : edges) {
-                if (distance[edge.start] != INF &&
-                        distance[edge.end] > distance[edge.start] + edge.time) {
-
+                if (distance[edge.start] == INF) {
+                    continue;
+                }
+                if (distance[edge.end] > distance[edge.start] + edge.time) {
                     distance[edge.end] = distance[edge.start] + edge.time;
-
                     if (i == N) {
                         return true;
                     }
