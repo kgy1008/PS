@@ -1,54 +1,88 @@
 import java.util.*;
 
 class Solution {
-    private static final int INF = Integer.MAX_VALUE;
-    private static final int[] dx = {0, 1, 0, -1}; 
-    private static final int[] dy = {1, 0, -1, 0};
-    
+    static int[][][] cost;
+    static int[] dx = {1, 0, -1, 0};
+    static int[] dy = {0, 1, 0, -1};
+
     public int solution(int[][] board) {
         int n = board.length;
-        int[][][] cost = new int[n][n][4]; 
-        
-        for (int[][] arr : cost) {
-            for (int[] row : arr) {
-                Arrays.fill(row, INF);
+        cost = new int[n][n][2]; // 0 : 수평 1: 수직
+
+        Deque<Road> queue = new ArrayDeque<>();
+        queue.offer(new Road(0, 0, -1));
+        for (int i=0; i<n; i++) {
+            for (int j=0; j<n; j++) {
+                cost[i][j][0] = Integer.MAX_VALUE;
+                cost[i][j][1] = Integer.MAX_VALUE;
             }
         }
-        
-        Deque<int[]> queue = new ArrayDeque<>();
-        
-        for (int i = 0; i < 4; i++) {
-            queue.offer(new int[] {0, 0, i, 0});  // x,y,direction,cost
-            cost[0][0][i] = 0; // 방향에 따른 비용 초기화
-        }
-        
+        cost[0][0][0] = cost[0][0][1] = 0;
+
         while (!queue.isEmpty()) {
-            int[] cur = queue.poll();
-            int x = cur[0];
-            int y = cur[1];
-            int dir = cur[2];
-            int curCost = cur[3];
-            
+            Road cur = queue.poll();
+
             for (int i = 0; i < 4; i++) {
-                int nx = x + dx[i];
-                int ny = y + dy[i];
-                int nextCost = curCost + (dir % 2 == i % 2 ? 100 : 600); // 같은 방향: 100, 회전: 600
-                
+                int nx = cur.x + dx[i];
+                int ny = cur.y + dy[i];
+
                 if (nx < 0 || nx >= n || ny < 0 || ny >= n || board[nx][ny] == 1) {
                     continue;
                 }
-                
-                if (nextCost < cost[nx][ny][i]) {
-                    cost[nx][ny][i] = nextCost;
-                    queue.offer(new int[] {nx, ny, i, nextCost});
+
+                if (cur.isVertical == -1) { // 시작 지점에서 출발한 거라면
+                    if (i % 2 == 0) { // 위 아래로 이동 (수직)
+                        if (cost[nx][ny][1] > cost[cur.x][cur.y][1] + 100) {
+                            cost[nx][ny][1] = cost[cur.x][cur.y][1] + 100;
+                            queue.offer(new Road(nx, ny, 1));
+                        }
+                    } else { // 좌우로 이동 (수평)
+                        if (cost[nx][ny][0] > cost[cur.x][cur.y][0] + 100) {
+                            cost[nx][ny][0] = cost[cur.x][cur.y][0] + 100;
+                            queue.offer(new Road(nx, ny, 0));
+                        }
+                    }
+                } else { // 직전의 위치가 시작 지점이 아니라면
+                    if (i % 2 == 0) { // 위 아래로 이동 (수직)
+                        if (cur.isVertical == 1) { // 방향 전환 X 
+                            if (cost[nx][ny][1] > cost[cur.x][cur.y][1] + 100) {
+                                cost[nx][ny][1] = cost[cur.x][cur.y][1] + 100;
+                                queue.offer(new Road(nx, ny, 1));
+                            }
+                        } else { // 방향 전환 (수평 -> 수직)
+                            if (cost[nx][ny][1] > cost[cur.x][cur.y][0] + 600) {
+                                cost[nx][ny][1] = cost[cur.x][cur.y][0] + 600;
+                                queue.offer(new Road(nx, ny, 1));
+                            }
+                        }
+                    } else { // 좌우 이동 (수평)
+                        if (cur.isVertical == 0) { // 방향 전환X (수평 -> 수평)
+                            if (cost[nx][ny][0] > cost[cur.x][cur.y][0] + 100) {
+                                cost[nx][ny][0] = cost[cur.x][cur.y][0] + 100;
+                                queue.offer(new Road(nx, ny, 0));
+                            }
+                        } else { // 방향 전환 (수직 -> 수평)
+                            if (cost[nx][ny][0] > cost[cur.x][cur.y][1] + 600) {
+                                cost[nx][ny][0] = cost[cur.x][cur.y][1] + 600;
+                                queue.offer(new Road(nx, ny, 0));
+                            }
+                        }
+                    }
                 }
             }
         }
-        
-        int answer = INF;
-        for (int i = 0; i < 4; i++) {
-            answer = Math.min(answer, cost[n - 1][n - 1][i]);
+        return Math.min(cost[n-1][n-1][0], cost[n-1][n-1][1]);
+    }
+
+    static class Road {
+        int x;
+        int y;
+        int isVertical;
+
+        Road(int x, int y, int isVertical) {
+            this.x = x;
+            this.y = y;
+            this.isVertical = isVertical;
         }
-        return answer;
     }
 }
