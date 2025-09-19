@@ -7,8 +7,8 @@ import java.util.StringTokenizer;
 public class Main {
     static int N;
     static ArrayList<Node>[] adj;
-    static long[] dp_down;
-    static long[] dp_up;
+    static long[] dpDown;
+    static long[] dpUp;
     static int[] size;
 
     public static void main(String[] args) throws IOException {
@@ -29,45 +29,39 @@ public class Main {
             adj[v].add(new Node(u, d));
         }
 
-        dp_down = new long[N + 1];
-        dp_up = new long[N + 1];
+        dpDown = new long[N + 1];
+        dpUp = new long[N + 1];
         size = new int[N + 1];
 
-        // 첫 번째 DFS: 자식 서브트리 합계 계산
-        dfs1(1, 0);
-
-        // 두 번째 DFS: 부모 서브트리 합계 계산
-        dfs2(1, 0);
+        dfsDown(1, 0);
+        dfsUp(1, 0);
 
         for (int i = 1; i <= N; i++) {
-            System.out.println(dp_down[i] + dp_up[i]);
+            System.out.println(dpDown[i] + dpUp[i]);
         }
     }
 
-    // Post-order Traversal
-    static void dfs1(int current, int parent) {
-        size[current] = 1;
-        dp_down[current] = 0;
+    private static void dfsDown(int curr, int parent) {
+        size[curr] = 1;
+        dpDown[curr] = 0;
 
-        for (Node node : adj[current]) {
-            if (node.to != parent) {
-                dfs1(node.to, current);
-                size[current] += size[node.to];
-                dp_down[current] += dp_down[node.to] + (long) size[node.to] * node.weight;
+        for (Node next : adj[curr]) {
+            if (next.to != parent) {
+                dfsDown(next.to, curr);
+                size[curr] += size[next.to];
+                dpDown[curr] += dpDown[next.to] + (long) size[next.to] * next.weight;
             }
         }
     }
-    
-    static void dfs2(int current, int parent) {
-        for (Node node : adj[current]) {
-            if (node.to != parent) {
-                // 부모 서브트리에서 자식 서브트리를 제외한 나머지 부분의 합
-                long rest_sum = dp_down[current] - (dp_down[node.to] + (long) size[node.to] * node.weight);
-                // 부모 서브트리에서 자식 서브트리를 제외한 나머지 정점의 수
-                long rest_size = N - size[node.to];
 
-                dp_up[node.to] = dp_up[current] + rest_sum + rest_size * node.weight;
-                dfs2(node.to, current);
+    private static void dfsUp(int curr, int parent) {
+        for (Node next : adj[curr]) {
+            if (next.to != parent) {
+                long restSize = N - size[next.to];
+                long restSum = dpDown[curr] - (dpDown[next.to] + (long) size[next.to] * next.weight);
+
+                dpUp[next.to] = dpUp[curr] + restSum + restSize * next.weight;
+                dfsUp(next.to, curr);
             }
         }
     }
