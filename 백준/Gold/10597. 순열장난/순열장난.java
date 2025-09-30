@@ -3,19 +3,22 @@ import java.io.InputStreamReader;
 
 public class Main {
     static boolean[] visited = new boolean[51];
+    static String answer = "";
 
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String s = br.readLine();
 
         bfs(s, "", 0);
+
+        System.out.println(answer.trim());
     }
 
     static void bfs(String s, String result, int max) {
         if (s.isEmpty()) {
             if (isValid(max)) {
-                System.out.println(result.trim());
-                System.exit(0);
+                answer = result;
+                return;
             }
         }
 
