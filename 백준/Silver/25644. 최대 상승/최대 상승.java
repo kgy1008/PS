@@ -20,12 +20,13 @@ public class Main {
         for (int i = 1; i < n; i++) {
             int current = nums[i];
 
-            int currentProfit = current - min;
-            answer = Math.max(answer, currentProfit);
-
             if (current < min) {
                 min = current;
             }
+
+            int currentProfit = current - min;
+            answer = Math.max(answer, currentProfit);
+
         }
         System.out.println(answer);
     }
