@@ -36,7 +36,7 @@ class Solution {
         }
         
         int dist = Math.abs(x-r) + Math.abs(y-c);
-        if (dist > k || dist % 2 != k % 2) {
+        if (dist > k || (k-dist) % 2 != 0) {
             return;
         }
         
