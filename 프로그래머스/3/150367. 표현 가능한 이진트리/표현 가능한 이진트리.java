@@ -1,60 +1,52 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 class Solution {
-    static int[] answer;
-    
     public int[] solution(long[] numbers) {
-        answer = new int[numbers.length];
+        int[] answer = new int[numbers.length];
         
         for (int i=0; i<numbers.length; i++) {
             long number = numbers[i];
-            
             String binary = Long.toBinaryString(number);
             int len = binary.length();
             
-            int h = 1;
-            while ((1 << h) - 1 < len) {
-                h++;
+            int targetLen = 1;
+            while (targetLen < len) {
+                targetLen = targetLen * 2 + 1;
             }
-            int treeSize = (1 << h) - 1;
-
-            StringBuilder sb = new StringBuilder();
-            for (int t = len; t < treeSize; t++ ) {
-                sb.append('0');
+            
+            int leftMove = targetLen - len;
+            
+            for (int m=0; m<leftMove; m++) {
+                binary = "0" + binary;
             }
-            sb.append(binary);
             
-            binary = sb.toString();
-            len = binary.length();
-            
-            if (solve(binary, 0, len - 1, false)) {
+            if (canMake(binary)) {
                 answer[i] = 1;
             } else {
                 answer[i] = 0;
             }
-        } 
+        }
         
         return answer;
     }
     
-    public boolean solve (String s, int start, int end, boolean isDummy) {
-        if (start > end) {
+    private static boolean canMake(String str) {
+        if (str.length() == 1) {
             return true;
         }
         
-        int mid = (start + end) / 2;
-        char parent = s.charAt(mid);
+        int len = str.length();
+        int mid = len / 2;
+
+        String left = str.substring(0, mid);
+        String right = str.substring(mid+1);
         
-        if (isDummy && parent == '1') {
-            return false;
+        if (str.charAt(mid) == '0') { // 부모 노드 존재 X -> 자식 노드도 존재하면 안됨
+            if (left.charAt(mid/2) == '1' || right.charAt(mid/2) == '1') {
+                return false;
+            }
         }
         
-        if (parent == '0') {
-            isDummy = true;
-        }
-        
-        return solve(s, start, mid - 1, isDummy) 
-            && solve(s, mid + 1, end, isDummy);
+        return canMake(left) && canMake(right);
     }
 }
