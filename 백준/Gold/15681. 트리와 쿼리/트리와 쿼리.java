@@ -3,7 +3,6 @@ import java.io.BufferedWriter;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -35,7 +34,6 @@ public class Main {
         }
 
         count = new int[n + 1];
-        Arrays.fill(count, 1);
         visited = new boolean[n + 1];
         dfs(r);
 
