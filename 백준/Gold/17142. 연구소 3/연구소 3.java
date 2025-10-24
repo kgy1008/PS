@@ -61,7 +61,7 @@ public class Main {
         }
     }
 
-    private static void spread(List<Virus> list, int emptyCount) { // 인자 변경
+    private static void spread(List<Virus> list, int emptyCount) { 
         boolean[][] visited = new boolean[n][n];
 
         Deque<Virus> queue = new ArrayDeque<>();
